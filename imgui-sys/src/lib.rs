@@ -651,6 +651,7 @@ pub type ImDrawCallback = Option<
 
 /// A single draw command within a parent ImDrawList (generally maps to 1 GPU draw call)
 #[repr(C)]
+#[derive(Debug)]
 pub struct ImDrawCmd {
     pub elem_count: c_uint,
     pub clip_rect: ImVec4,

@@ -57,16 +57,18 @@ impl From<DrawError> for RendererError {
     fn from(e: DrawError) -> RendererError { RendererError::Draw(e) }
 }
 
-pub struct Renderer {
+pub struct Renderer<'f, F: 'f + Facade> {
     ctx: Rc<Context>,
+    facade: &'f F,
     device_objects: DeviceObjects,
 }
 
-impl Renderer {
-    pub fn init<F: Facade>(imgui: &mut ImGui, ctx: &F) -> RendererResult<Renderer> {
+impl<'f, F: Facade> Renderer<'f, F> {
+    pub fn init(imgui: &mut ImGui, ctx: &'f F) -> RendererResult<Renderer<'f, F>> {
         let device_objects = try!(DeviceObjects::init(imgui, ctx));
         Ok(Renderer {
             ctx: Rc::clone(ctx.get_context()),
+            facade: ctx,
             device_objects: device_objects,
         })
     }
@@ -116,9 +118,14 @@ impl Renderer {
         let mut idx_start = 0;
         for cmd in draw_list.cmd_buffer {
             // We don't support custom textures...yet!
-            assert!(cmd.texture_id as usize == font_texture_id);
+            // assert!(cmd.texture_id as usize == font_texture_id);
 
             let idx_end = idx_start + cmd.elem_count as usize;
+
+            let not_font_texture =
+                unsafe {
+                    texture::Texture2d::from_id(self.facade, texture::UncompressedFloatFormat::F32F32F32F32, cmd.texture_id as std::os::raw::c_uint, false, texture::MipmapsOption::NoMipmap, texture::Dimensions::Texture2d {width: 49, height: 49})
+                };
 
             try!(
                 surface.draw(
@@ -130,7 +137,9 @@ impl Renderer {
                     &self.device_objects.program,
                     &uniform! {
                           matrix: matrix,
-                          tex: self.device_objects.texture.sampled()
+                          tex: if cmd.texture_id as usize == font_texture_id { self.device_objects.texture.sampled() } else {
+                              not_font_texture.sampled()
+                          }
                               .magnify_filter(MagnifySamplerFilter::Nearest)
                               .minify_filter(MinifySamplerFilter::Nearest),
                       },
