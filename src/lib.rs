@@ -248,6 +248,14 @@ impl ImGui {
     pub fn get_time(&self) -> f32 { unsafe { sys::igGetTime() } }
     pub fn get_frame_count(&self) -> i32 { unsafe { sys::igGetFrameCount() } }
     pub fn get_frame_rate(&self) -> f32 { self.io().framerate }
+    /// Get current window's size in pixels
+    pub fn get_window_size(&self) -> (f32, f32) {
+        let mut out = ImVec2::new(0.0, 0.0);
+        unsafe {
+            sys::igGetWindowSize(&mut out as *mut ImVec2);
+        }
+        (out.x, out.y)
+    }
     pub fn frame<'ui, 'a: 'ui>(
         &'a mut self,
         size_points: (u32, u32),
