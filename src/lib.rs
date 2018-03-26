@@ -1107,4 +1107,11 @@ impl<'ui> Ui<'ui> {
     pub fn is_item_hovered(&self) -> bool {
         unsafe { sys::igIsItemHovered(ImGuiHoveredFlags::empty()) }
     }
+
+    /// Returns `true` if the last item is being active.
+    pub fn is_item_active(&self) -> bool {
+        unsafe {
+            sys::igIsItemActive()
+        }
+    }
 }
