@@ -1189,9 +1189,9 @@ impl<'ui> Ui<'ui> {
 impl<'ui> Ui<'ui> {
     pub fn with_window_draw_list<F>(&self, f: F)
     where
-        F: FnOnce(WindowDrawList),
+        F: FnOnce(&WindowDrawList),
     {
         let window_draw_list = WindowDrawList::new(self);
-        f(window_draw_list);
+        f(&window_draw_list);
     }
 }
