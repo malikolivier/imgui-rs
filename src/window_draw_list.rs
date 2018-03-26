@@ -1,5 +1,3 @@
-use std::marker::PhantomData;
-
 use sys;
 use sys::{ImDrawList, ImU32};
 
@@ -27,23 +25,21 @@ impl From<(f32, f32, f32, f32)> for DrawColor {
     }
 }
 
-pub struct WindowDrawList<'ui> {
-    draw_list: &'ui mut ImDrawList,
-    _phantom: PhantomData<&'ui Ui<'ui>>,
+#[derive(Debug)]
+pub struct WindowDrawList {
+    draw_list: *mut ImDrawList,
 }
 
-impl<'ui> WindowDrawList<'ui> {
-    pub fn new(_: &Ui<'ui>) -> Self {
+impl WindowDrawList {
+    pub fn new(_: &Ui) -> Self {
         Self {
             draw_list: unsafe {
-                let draw_list = sys::igGetWindowDrawList();
-                &mut *draw_list
+                sys::igGetWindowDrawList()
             },
-            _phantom: PhantomData,
         }
     }
 
-    pub fn add_line<P1, P2, C>(&'ui mut self, p1: P1, p2: P2, c: C) -> Line<'ui>
+    pub fn add_line<P1, P2, C>(&self, p1: P1, p2: P2, c: C) -> Line
     where
         P1: Into<ImVec2>,
         P2: Into<ImVec2>,
@@ -53,16 +49,16 @@ impl<'ui> WindowDrawList<'ui> {
     }
 }
 
-pub struct Line<'ui> {
+pub struct Line {
     p1: ImVec2,
     p2: ImVec2,
     color: DrawColor,
     thickness: f32,
-    draw_list: &'ui mut ImDrawList,
+    draw_list: *mut ImDrawList,
 }
 
-impl<'ui> Line<'ui> {
-    fn new<P1, P2, C>(draw_list: &'ui mut ImDrawList, p1: P1, p2: P2, c: C) -> Self
+impl Line {
+    fn new<P1, P2, C>(draw_list: *mut ImDrawList, p1: P1, p2: P2, c: C) -> Self
     where
         P1: Into<ImVec2>,
         P2: Into<ImVec2>,
@@ -85,7 +81,7 @@ impl<'ui> Line<'ui> {
     pub fn build(self) {
         unsafe {
             sys::ImDrawList_AddLine(
-                self.draw_list as *mut ImDrawList,
+                self.draw_list,
                 self.p1,
                 self.p2,
                 self.color.into(),
