@@ -298,6 +298,18 @@ impl ImGui {
         }
         (out.x, out.y)
     }
+    /// Get current window's width in pixels
+    pub fn get_window_width(&self) -> f32 {
+        unsafe {
+            sys::igGetWindowWidth()
+        }
+    }
+    /// Get current window's height in pixels
+    pub fn get_window_height(&self) -> f32 {
+        unsafe {
+            sys::igGetWindowHeight()
+        }
+    }
     pub fn frame<'ui, 'a: 'ui>(
         &'a mut self,
         size_points: (u32, u32),
