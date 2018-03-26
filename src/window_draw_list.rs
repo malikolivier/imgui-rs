@@ -3,6 +3,8 @@ use sys::{ImDrawList, ImU32};
 
 use super::{ImVec2, ImVec4, Ui};
 
+use std::marker::PhantomData;
+
 /// Wrap ImU32 (a type typically used by ImGui to store packed colors)
 #[derive(Copy, Clone)]
 pub struct DrawColor(ImU32);
@@ -26,16 +28,18 @@ impl From<(f32, f32, f32, f32)> for DrawColor {
 }
 
 #[derive(Debug)]
-pub struct WindowDrawList {
+pub struct WindowDrawList<'ui> {
     draw_list: *mut ImDrawList,
+    _phantom: PhantomData<&'ui Ui<'ui>>,
 }
 
-impl WindowDrawList {
-    pub fn new(_: &Ui) -> Self {
+impl<'ui> WindowDrawList<'ui> {
+    pub fn new(_: &Ui<'ui>) -> Self {
         Self {
             draw_list: unsafe {
                 sys::igGetWindowDrawList()
             },
+            _phantom: PhantomData,
         }
     }
 
