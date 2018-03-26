@@ -49,20 +49,21 @@ impl<'ui> WindowDrawList<'ui> {
         P2: Into<ImVec2>,
         C: Into<DrawColor>,
     {
-        Line::new(self.draw_list, p1, p2, c)
+        Line::new(self, p1, p2, c)
     }
 }
 
-pub struct Line {
+pub struct Line<'ui> {
     p1: ImVec2,
     p2: ImVec2,
     color: DrawColor,
     thickness: f32,
     draw_list: *mut ImDrawList,
+    _phantom: PhantomData<&'ui WindowDrawList<'ui>>,
 }
 
-impl Line {
-    fn new<P1, P2, C>(draw_list: *mut ImDrawList, p1: P1, p2: P2, c: C) -> Self
+impl<'ui> Line<'ui> {
+    fn new<P1, P2, C>(draw_list: &WindowDrawList<'ui>, p1: P1, p2: P2, c: C) -> Self
     where
         P1: Into<ImVec2>,
         P2: Into<ImVec2>,
@@ -73,7 +74,8 @@ impl Line {
             p2: p2.into(),
             color: c.into(),
             thickness: 1.0,
-            draw_list,
+            draw_list: draw_list.draw_list,
+            _phantom: PhantomData,
         }
     }
 
