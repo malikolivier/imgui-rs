@@ -43,6 +43,12 @@ impl<'ui> WindowDrawList<'ui> {
         }
     }
 
+    pub fn channels_split<F: FnOnce()>(&self, channels_count: u32, f: F) {
+        unsafe { sys::ImDrawList_ChannelsSplit(self.draw_list, channels_count as i32) };
+        f();
+        unsafe { sys::ImDrawList_ChannelsMerge(self.draw_list) };
+    }
+
     pub fn add_line<P1, P2, C>(&self, p1: P1, p2: P2, c: C) -> Line
     where
         P1: Into<ImVec2>,
