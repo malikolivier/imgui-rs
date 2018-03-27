@@ -43,9 +43,9 @@ impl<'ui> WindowDrawList<'ui> {
         }
     }
 
-    pub fn channels_split<F: FnOnce()>(&self, channels_count: u32, f: F) {
+    pub fn channels_split<F: FnOnce(&ChannelsSplit)>(&self, channels_count: u32, f: F) {
         unsafe { sys::ImDrawList_ChannelsSplit(self.draw_list, channels_count as i32) };
-        f();
+        f(&ChannelsSplit(self));
         unsafe { sys::ImDrawList_ChannelsMerge(self.draw_list) };
     }
 
@@ -59,17 +59,24 @@ impl<'ui> WindowDrawList<'ui> {
     }
 }
 
+pub struct ChannelsSplit<'ui>(&'ui WindowDrawList<'ui>);
+
+impl<'ui> ChannelsSplit<'ui> {
+    pub fn channels_set_current(&self, channel_index: u32) {
+        unsafe { sys::ImDrawList_ChannelsSetCurrent(self.0.draw_list, channel_index as i32) };
+    }
+}
+
 pub struct Line<'ui> {
     p1: ImVec2,
     p2: ImVec2,
     color: DrawColor,
     thickness: f32,
-    draw_list: *mut ImDrawList,
-    _phantom: PhantomData<&'ui WindowDrawList<'ui>>,
+    draw_list: &'ui WindowDrawList<'ui>,
 }
 
 impl<'ui> Line<'ui> {
-    fn new<P1, P2, C>(draw_list: &WindowDrawList<'ui>, p1: P1, p2: P2, c: C) -> Self
+    fn new<P1, P2, C>(draw_list: &'ui WindowDrawList<'ui>, p1: P1, p2: P2, c: C) -> Self
     where
         P1: Into<ImVec2>,
         P2: Into<ImVec2>,
@@ -80,8 +87,7 @@ impl<'ui> Line<'ui> {
             p2: p2.into(),
             color: c.into(),
             thickness: 1.0,
-            draw_list: draw_list.draw_list,
-            _phantom: PhantomData,
+            draw_list,
         }
     }
 
@@ -93,7 +99,7 @@ impl<'ui> Line<'ui> {
     pub fn build(self) {
         unsafe {
             sys::ImDrawList_AddLine(
-                self.draw_list,
+                self.draw_list.draw_list,
                 self.p1,
                 self.p2,
                 self.color.into(),
