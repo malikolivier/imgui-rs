@@ -47,6 +47,7 @@ struct State {
     file_menu: FileMenuState,
     radio_button: i32,
     color_edit: ColorEditState,
+    custom_rendering: CustomRenderingState,
 }
 
 impl Default for State {
@@ -95,6 +96,7 @@ impl Default for State {
             file_menu: Default::default(),
             radio_button: 0,
             color_edit: ColorEditState::default(),
+            custom_rendering: Default::default(),
         }
     }
 }
@@ -153,6 +155,20 @@ struct AutoResizeState {
 
 impl Default for AutoResizeState {
     fn default() -> Self { AutoResizeState { lines: 10 } }
+}
+
+struct CustomRenderingState {
+    sz: f32,
+    col: [f32; 3],
+}
+
+impl Default for CustomRenderingState {
+    fn default() -> Self {
+        CustomRenderingState {
+            sz: 36.0,
+            col: [1.0, 1.0, 0.4],
+        }
+    }
 }
 
 const CLEAR_COLOR: [f32; 4] = [114.0 / 255.0, 144.0 / 255.0, 154.0 / 255.0, 1.0];
@@ -240,9 +256,10 @@ fn show_test_window(ui: &Ui, state: &mut State, opened: &mut bool) {
     }
 
     if state.show_app_custom_rendering {
-        show_example_app_custom_rendering(ui, &mut state.show_app_custom_rendering);
+        show_example_app_custom_rendering(ui, &mut state.custom_rendering, &mut state.show_app_custom_rendering);
     }
 
+    return;
     ui.window(im_str!("ImGui Demo"))
         .title_bar(!state.no_titlebar)
         .show_borders(!state.no_border)
@@ -747,11 +764,43 @@ My title is the same as window 1, but my identifier is unique.",
         .build(|| ui.text("This window has a changing title"));
 }
 
-fn show_example_app_custom_rendering(ui: &Ui, opened: &mut bool) {
+fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, opened: &mut bool) {
     ui.window(im_str!("Example: Custom rendering"))
         .size((350.0, 560.0), ImGuiCond::FirstUseEver)
         .opened(opened)
         .build(|| {
-
+            ui.text("Primitives");
+            // TODO: Add DragFloat to change value of sz
+            ui.color_edit(im_str!("Color"), &mut state.col).build();
+            let p = ui.get_cursor_screen_pos();
+            let spacing = 8.0;
+            let mut y = p.1 + 4.0;
+            for n in 0..2 {
+                let mut x = p.0 + 4.0;
+                let thickness = if n == 0 {
+                    1.0
+                } else {
+                    4.0
+                };
+                ui.with_window_draw_list(|draw_list| {
+                    // draw_list.add_circle((x + state.sz*0.5, y + state.sz*0.5)).build();
+                    x += state.sz + spacing;
+                    // Add rect
+                    x += state.sz + spacing;
+                    // Add rect
+                    x += state.sz + spacing;
+                    // Add rect
+                    x += state.sz + spacing;
+                    draw_list.add_line((x, y), (x + state.sz, y), state.col).with_thickness(thickness).build();
+                    x += state.sz + spacing;
+                    draw_list.add_line((x, y), (x + state.sz, y + state.sz), state.col).with_thickness(thickness).build();
+                    x += state.sz + spacing;
+                    draw_list.add_line((x, y), (x, y + state.sz), state.col).with_thickness(thickness).build();
+                    x += spacing;
+                    // Add bezier curve
+                });
+                y += state.sz + spacing;
+            }
+            ui.separator();
         });
 }
