@@ -6,11 +6,20 @@ use super::{ImVec2, ImVec4, Ui};
 use std::marker::PhantomData;
 
 /// Wrap ImU32 (a type typically used by ImGui to store packed colors)
+/// This type is used to represent the color of drawing primitives in ImGui's
+/// custom drawing API.
+///
+/// The type implements `From<ImU32>`, `From<ImVec4>`, `From<[f32: 4]>` and
+/// `From<(f32, f32, f32, f32)> for convenience.
 #[derive(Copy, Clone)]
 pub struct DrawColor(ImU32);
 
 impl From<DrawColor> for ImU32 {
     fn from(color: DrawColor) -> Self { color.0 }
+}
+
+impl From<ImU32> for DrawColor {
+    fn from(color: ImU32) -> Self { DrawColor(color) }
 }
 
 impl From<ImVec4> for DrawColor {
@@ -27,17 +36,10 @@ impl From<(f32, f32, f32, f32)> for DrawColor {
     }
 }
 
-pub trait DrawAPI<'ui>: Sized {
+/// All types from which ImGui's custom draw API can be used implement this
+/// trait.
+trait DrawAPI<'ui> {
     fn draw_list(&self) -> *mut ImDrawList;
-
-    fn add_line<P1, P2, C>(&'ui self, p1: P1, p2: P2, c: C) -> Line<'ui, Self>
-    where
-        P1: Into<ImVec2>,
-        P2: Into<ImVec2>,
-        C: Into<DrawColor>,
-    {
-        Line::new(self, p1, p2, c)
-    }
 }
 
 pub struct WindowDrawList<'ui> {
@@ -46,17 +48,13 @@ pub struct WindowDrawList<'ui> {
 }
 
 impl<'ui> DrawAPI<'ui> for WindowDrawList<'ui> {
-    fn draw_list(&self) -> *mut ImDrawList {
-        self.draw_list
-    }
+    fn draw_list(&self) -> *mut ImDrawList { self.draw_list }
 }
 
 impl<'ui> WindowDrawList<'ui> {
     pub fn new(_: &Ui<'ui>) -> Self {
         Self {
-            draw_list: unsafe {
-                sys::igGetWindowDrawList()
-            },
+            draw_list: unsafe { sys::igGetWindowDrawList() },
             _phantom: PhantomData,
         }
     }
@@ -71,9 +69,7 @@ impl<'ui> WindowDrawList<'ui> {
 pub struct ChannelsSplit<'ui>(&'ui WindowDrawList<'ui>);
 
 impl<'ui> DrawAPI<'ui> for ChannelsSplit<'ui> {
-    fn draw_list(&self) -> *mut ImDrawList {
-        self.0.draw_list
-    }
+    fn draw_list(&self) -> *mut ImDrawList { self.0.draw_list }
 }
 
 impl<'ui> ChannelsSplit<'ui> {
@@ -82,23 +78,26 @@ impl<'ui> ChannelsSplit<'ui> {
     }
 }
 
-//macro_rules! impl_draw_list_methods {
-//    ($T:ident) => {
-//        impl<'ui> $T<'ui> {
-//            pub fn add_line<P1, P2, C>(&self, p1: P1, p2: P2, c: C) -> Line
-//            where
-//                P1: Into<ImVec2>,
-//                P2: Into<ImVec2>,
-//                C: Into<DrawColor>,
-//            {
-//                Line::new(self, p1, p2, c)
-//            }
-//        }
-//    }
-//}
-//
-//impl_draw_list_methods!(WindowDrawList);
-//impl_draw_list_methods!(ChannelsSplit);
+macro_rules! impl_draw_list_methods {
+    ($T: ident) => {
+        impl<'ui> $T<'ui>
+        where
+            $T<'ui>: DrawAPI<'ui>,
+        {
+            pub fn add_line<P1, P2, C>(&self, p1: P1, p2: P2, c: C) -> Line<'ui, $T>
+            where
+                P1: Into<ImVec2>,
+                P2: Into<ImVec2>,
+                C: Into<DrawColor>,
+            {
+                Line::new(self, p1, p2, c)
+            }
+        }
+    };
+}
+
+impl_draw_list_methods!(WindowDrawList);
+impl_draw_list_methods!(ChannelsSplit);
 
 pub struct Line<'ui, D: 'ui> {
     p1: ImVec2,

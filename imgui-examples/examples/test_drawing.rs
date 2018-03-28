@@ -2,7 +2,6 @@ extern crate glium;
 extern crate imgui;
 extern crate imgui_glium_renderer;
 
-use imgui::DrawAPI;
 
 mod support;
 
