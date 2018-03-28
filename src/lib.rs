@@ -443,6 +443,14 @@ impl<'ui> Ui<'ui> {
             sys::igGetWindowHeight()
         }
     }
+    /// Get position in pixels of the cursor in the current window
+    pub fn get_cursor_screen_pos(&self) -> (f32, f32) {
+        let mut out = ImVec2::new(0.0, 0.0);
+        unsafe {
+            sys::igGetCursorScreenPos(&mut out as *mut ImVec2);
+        }
+        (out.x, out.y)
+    }
 }
 
 // Layout
