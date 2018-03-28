@@ -66,7 +66,7 @@ impl Default for State {
             show_app_fixed_overlay: false,
             show_app_constrained_resize: false,
             show_app_manipulating_window_title: false,
-            show_app_custom_rendering: false,
+            show_app_custom_rendering: true,
             show_app_style_editor: false,
             show_app_metrics: false,
             show_app_about: false,
@@ -237,6 +237,10 @@ fn show_test_window(ui: &Ui, state: &mut State, opened: &mut bool) {
                         information.",
                 );
             });
+    }
+
+    if state.show_app_custom_rendering {
+        show_example_app_custom_rendering(ui, &mut state.show_app_custom_rendering);
     }
 
     ui.window(im_str!("ImGui Demo"))
@@ -741,4 +745,13 @@ My title is the same as window 1, but my identifier is unique.",
     ui.window(title)
         .position((100.0, 300.0), ImGuiCond::FirstUseEver)
         .build(|| ui.text("This window has a changing title"));
+}
+
+fn show_example_app_custom_rendering(ui: &Ui, opened: &mut bool) {
+    ui.window(im_str!("Example: Custom rendering"))
+        .size((350.0, 560.0), ImGuiCond::FirstUseEver)
+        .opened(opened)
+        .build(|| {
+
+        });
 }
