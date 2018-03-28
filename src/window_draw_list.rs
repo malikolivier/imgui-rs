@@ -9,36 +9,45 @@ use std::marker::PhantomData;
 /// This type is used to represent the color of drawing primitives in ImGui's
 /// custom drawing API.
 ///
-/// The type implements `From<ImU32>`, `From<ImVec4>`, `From<[f32: 4]>` and
-/// `From<(f32, f32, f32, f32)> for convenience.
+/// The type implements `From<ImU32>`, `From<ImVec4>`, `From<[f32; 4]>`,
+/// `From<[f32; 3]>, `From<(f32, f32, f32, f32)>` and `From<(f32, f32, f32)>`
+/// for convenience. If alpha is not provided, it is assumed to be 1.0 (255).
 #[derive(Copy, Clone)]
-pub struct DrawColor(ImU32);
+pub struct ImColor(ImU32);
 
-impl From<DrawColor> for ImU32 {
-    fn from(color: DrawColor) -> Self { color.0 }
+impl From<ImColor> for ImU32 {
+    fn from(color: ImColor) -> Self { color.0 }
 }
 
-impl From<ImU32> for DrawColor {
-    fn from(color: ImU32) -> Self { DrawColor(color) }
+impl From<ImU32> for ImColor {
+    fn from(color: ImU32) -> Self { ImColor(color) }
 }
 
-impl From<ImVec4> for DrawColor {
-    fn from(v: ImVec4) -> Self { DrawColor(unsafe { sys::igColorConvertFloat4ToU32(v) }) }
+impl From<ImVec4> for ImColor {
+    fn from(v: ImVec4) -> Self { ImColor(unsafe { sys::igColorConvertFloat4ToU32(v) }) }
 }
 
-impl From<[f32; 4]> for DrawColor {
-    fn from(v: [f32; 4]) -> Self { DrawColor(unsafe { sys::igColorConvertFloat4ToU32(v.into()) }) }
+impl From<[f32; 4]> for ImColor {
+    fn from(v: [f32; 4]) -> Self { ImColor(unsafe { sys::igColorConvertFloat4ToU32(v.into()) }) }
 }
 
-impl From<(f32, f32, f32, f32)> for DrawColor {
+impl From<(f32, f32, f32, f32)> for ImColor {
     fn from(v: (f32, f32, f32, f32)) -> Self {
-        DrawColor(unsafe { sys::igColorConvertFloat4ToU32(v.into()) })
+        ImColor(unsafe { sys::igColorConvertFloat4ToU32(v.into()) })
     }
+}
+
+impl From<[f32; 3]> for ImColor {
+    fn from(v: [f32; 3]) -> Self { [v[0], v[1], v[2], 1.0].into() }
+}
+
+impl From<(f32, f32, f32)> for ImColor {
+    fn from(v: (f32, f32, f32)) -> Self { [v.0, v.1, v.2, 1.0].into() }
 }
 
 /// All types from which ImGui's custom draw API can be used implement this
 /// trait.
-trait DrawAPI<'ui> {
+pub trait DrawAPI<'ui> {
     fn draw_list(&self) -> *mut ImDrawList;
 }
 
@@ -88,7 +97,7 @@ macro_rules! impl_draw_list_methods {
             where
                 P1: Into<ImVec2>,
                 P2: Into<ImVec2>,
-                C: Into<DrawColor>,
+                C: Into<ImColor>,
             {
                 Line::new(self, p1, p2, c)
             }
@@ -102,7 +111,7 @@ impl_draw_list_methods!(ChannelsSplit);
 pub struct Line<'ui, D: 'ui> {
     p1: ImVec2,
     p2: ImVec2,
-    color: DrawColor,
+    color: ImColor,
     thickness: f32,
     draw_list: &'ui D,
 }
@@ -112,7 +121,7 @@ impl<'ui, D: DrawAPI<'ui>> Line<'ui, D> {
     where
         P1: Into<ImVec2>,
         P2: Into<ImVec2>,
-        C: Into<DrawColor>,
+        C: Into<ImColor>,
     {
         Self {
             p1: p1.into(),
