@@ -2,6 +2,8 @@ extern crate glium;
 extern crate imgui;
 extern crate imgui_glium_renderer;
 
+use imgui::DrawAPI;
+
 mod support;
 
 const CLEAR_COLOR: [f32; 4] = [0.2, 0.2, 0.2, 1.0];
