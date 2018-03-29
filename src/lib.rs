@@ -246,6 +246,16 @@ impl ImGui {
             sys::igIsMouseDragging(button as c_int, -1.0)
         }
     }
+    pub fn is_mouse_down(&self, button: ImMouseButton) -> bool {
+        unsafe {
+            sys::igIsMouseDown(button as c_int)
+        }
+    }
+    pub fn is_mouse_clicked(&self, button: ImMouseButton) -> bool {
+        unsafe {
+            sys::igIsMouseClicked(button as c_int, false)
+        }
+    }
     pub fn key_ctrl(&self) -> bool {
         let io = self.io();
         io.key_ctrl
@@ -580,6 +590,9 @@ impl<'ui> Ui<'ui> {
     }
     pub fn small_button<'p>(&self, label: &'p ImStr) -> bool {
         unsafe { sys::igSmallButton(label.as_ptr()) }
+    }
+    pub fn invisible_button<'p, S: Into<ImVec2>>(&self, label: &'p ImStr, size: S) -> bool {
+        unsafe { sys::igInvisibleButton(label.as_ptr(), size.into()) }
     }
     pub fn checkbox<'p>(&self, label: &'p ImStr, value: &'p mut bool) -> bool {
         unsafe { sys::igCheckbox(label.as_ptr(), value) }
