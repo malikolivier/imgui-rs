@@ -256,7 +256,11 @@ fn show_test_window(ui: &Ui, state: &mut State, opened: &mut bool) {
     }
 
     if state.show_app_custom_rendering {
-        show_example_app_custom_rendering(ui, &mut state.custom_rendering, &mut state.show_app_custom_rendering);
+        show_example_app_custom_rendering(
+            ui,
+            &mut state.custom_rendering,
+            &mut state.show_app_custom_rendering,
+        );
     }
 
     return;
@@ -777,25 +781,43 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
             let mut y = p.1 + 4.0;
             for n in 0..2 {
                 let mut x = p.0 + 4.0;
-                let thickness = if n == 0 {
-                    1.0
-                } else {
-                    4.0
-                };
+                let thickness = if n == 0 { 1.0 } else { 4.0 };
                 ui.with_window_draw_list(|draw_list| {
                     // draw_list.add_circle((x + state.sz*0.5, y + state.sz*0.5)).build();
                     x += state.sz + spacing;
-                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).build();
+                    draw_list
+                        .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                        .thickness(thickness)
+                        .build();
                     x += state.sz + spacing;
-                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).rounding(10.0).build();
+                    draw_list
+                        .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                        .thickness(thickness)
+                        .rounding(10.0)
+                        .build();
                     x += state.sz + spacing;
-                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).rounding(10.0).round_top_right(false).round_bot_left(false).build();
+                    draw_list
+                        .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                        .thickness(thickness)
+                        .rounding(10.0)
+                        .round_top_right(false)
+                        .round_bot_left(false)
+                        .build();
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x + state.sz, y), state.col).thickness(thickness).build();
+                    draw_list
+                        .add_line((x, y), (x + state.sz, y), state.col)
+                        .thickness(thickness)
+                        .build();
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).build();
+                    draw_list
+                        .add_line((x, y), (x + state.sz, y + state.sz), state.col)
+                        .thickness(thickness)
+                        .build();
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x, y + state.sz), state.col).thickness(thickness).build();
+                    draw_list
+                        .add_line((x, y), (x, y + state.sz), state.col)
+                        .thickness(thickness)
+                        .build();
                     x += spacing;
                     // Add bezier curve
                 });
@@ -805,11 +827,24 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                 let mut x = p.0 + 4.0;
                 // Add circle
                 x += state.sz + spacing;
-                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).build();
+                draw_list
+                    .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                    .filled(true)
+                    .build();
                 x += state.sz + spacing;
-                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).rounding(10.0).build();
+                draw_list
+                    .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                    .filled(true)
+                    .rounding(10.0)
+                    .build();
                 x += state.sz + spacing;
-                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).rounding(10.0).round_top_right(false).round_bot_left(false).build();
+                draw_list
+                    .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
+                    .filled(true)
+                    .rounding(10.0)
+                    .round_top_right(false)
+                    .round_bot_left(false)
+                    .build();
                 x += state.sz + spacing;
             });
             ui.separator();

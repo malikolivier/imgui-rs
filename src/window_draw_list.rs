@@ -1,5 +1,5 @@
 use sys;
-use sys::{ImDrawList, ImDrawCornerFlags, ImU32};
+use sys::{ImDrawCornerFlags, ImDrawList, ImU32};
 
 use super::{ImVec2, ImVec4, Ui};
 
@@ -227,13 +227,26 @@ impl<'ui, D: DrawAPI<'ui>> Rect<'ui, D> {
     pub fn build(self) {
         if self.filled {
             unsafe {
-                sys::ImDrawList_AddRectFilled(self.draw_list.draw_list(),
-      self.p1, self.p2, self.color.into(), self.rounding, self.flags);
+                sys::ImDrawList_AddRectFilled(
+                    self.draw_list.draw_list(),
+                    self.p1,
+                    self.p2,
+                    self.color.into(),
+                    self.rounding,
+                    self.flags,
+                );
             }
         } else {
             unsafe {
-                sys::ImDrawList_AddRect(self.draw_list.draw_list(),
-      self.p1, self.p2, self.color.into(), self.rounding, self.flags, self.thickness);
+                sys::ImDrawList_AddRect(
+                    self.draw_list.draw_list(),
+                    self.p1,
+                    self.p2,
+                    self.color.into(),
+                    self.rounding,
+                    self.flags,
+                    self.thickness,
+                );
             }
         }
     }
