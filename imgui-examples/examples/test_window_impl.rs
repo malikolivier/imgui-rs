@@ -837,7 +837,16 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                         .thickness(thickness)
                         .build();
                     x += spacing;
-                    // Add bezier curve
+                    draw_list
+                        .add_bezier_curve(
+                            (x, y),
+                            (x + state.sz * 1.3, y + state.sz * 0.3),
+                            (x + state.sz - state.sz * 1.3, y + state.sz - state.sz * 0.3),
+                            (x + state.sz, y + state.sz),
+                            state.col,
+                        )
+                        .thickness(thickness)
+                        .build();
                 });
                 y += state.sz + spacing;
             }
