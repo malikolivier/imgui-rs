@@ -1,5 +1,5 @@
 use sys;
-use sys::{ImDrawList, ImU32};
+use sys::{ImDrawList, ImDrawCornerFlags, ImU32};
 
 use super::{ImVec2, ImVec4, Ui};
 
@@ -101,6 +101,15 @@ macro_rules! impl_draw_list_methods {
             {
                 Line::new(self, p1, p2, c)
             }
+
+            pub fn add_rect<P1, P2, C>(&self, p1: P1, p2: P2, c: C) -> Rect<'ui, $T>
+            where
+                P1: Into<ImVec2>,
+                P2: Into<ImVec2>,
+                C: Into<ImColor>,
+            {
+                Rect::new(self, p1, p2, c)
+            }
         }
     };
 }
@@ -146,6 +155,86 @@ impl<'ui, D: DrawAPI<'ui>> Line<'ui, D> {
                 self.color.into(),
                 self.thickness,
             )
+        }
+    }
+}
+
+pub struct Rect<'ui, D: 'ui> {
+    p1: ImVec2,
+    p2: ImVec2,
+    color: ImColor,
+    rounding: f32,
+    flags: ImDrawCornerFlags,
+    thickness: f32,
+    filled: bool,
+    draw_list: &'ui D,
+}
+
+impl<'ui, D: DrawAPI<'ui>> Rect<'ui, D> {
+    fn new<P1, P2, C>(draw_list: &'ui D, p1: P1, p2: P2, c: C) -> Self
+    where
+        P1: Into<ImVec2>,
+        P2: Into<ImVec2>,
+        C: Into<ImColor>,
+    {
+        Self {
+            p1: p1.into(),
+            p2: p2.into(),
+            color: c.into(),
+            rounding: 0.0,
+            flags: ImDrawCornerFlags::All,
+            thickness: 1.0,
+            filled: false,
+            draw_list,
+        }
+    }
+
+    pub fn rounding(mut self, rounding: f32) -> Self {
+        self.rounding = rounding;
+        self
+    }
+
+    pub fn round_top_left(mut self, value: bool) -> Self {
+        self.flags.set(ImDrawCornerFlags::TopLeft, value);
+        self
+    }
+
+    pub fn round_top_right(mut self, value: bool) -> Self {
+        self.flags.set(ImDrawCornerFlags::TopRight, value);
+        self
+    }
+
+    pub fn round_bot_left(mut self, value: bool) -> Self {
+        self.flags.set(ImDrawCornerFlags::BotLeft, value);
+        self
+    }
+
+    pub fn round_bot_right(mut self, value: bool) -> Self {
+        self.flags.set(ImDrawCornerFlags::BotRight, value);
+        self
+    }
+
+    pub fn thickness(mut self, thickness: f32) -> Self {
+        self.thickness = thickness;
+        self
+    }
+
+    pub fn filled(mut self, filled: bool) -> Self {
+        self.filled = filled;
+        self
+    }
+
+    pub fn build(self) {
+        if self.filled {
+            unsafe {
+                sys::ImDrawList_AddRectFilled(self.draw_list.draw_list(),
+      self.p1, self.p2, self.color.into(), self.rounding, self.flags);
+            }
+        } else {
+            unsafe {
+                sys::ImDrawList_AddRect(self.draw_list.draw_list(),
+      self.p1, self.p2, self.color.into(), self.rounding, self.flags, self.thickness);
+            }
         }
     }
 }

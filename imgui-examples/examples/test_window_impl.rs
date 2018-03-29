@@ -785,11 +785,11 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                 ui.with_window_draw_list(|draw_list| {
                     // draw_list.add_circle((x + state.sz*0.5, y + state.sz*0.5)).build();
                     x += state.sz + spacing;
-                    // Add rect
+                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).build();
                     x += state.sz + spacing;
-                    // Add rect
+                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).rounding(10.0).build();
                     x += state.sz + spacing;
-                    // Add rect
+                    draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).rounding(10.0).round_top_right(false).round_bot_left(false).build();
                     x += state.sz + spacing;
                     draw_list.add_line((x, y), (x + state.sz, y), state.col).thickness(thickness).build();
                     x += state.sz + spacing;
@@ -801,6 +801,17 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                 });
                 y += state.sz + spacing;
             }
+            ui.with_window_draw_list(|draw_list| {
+                let mut x = p.0 + 4.0;
+                // Add circle
+                x += state.sz + spacing;
+                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).build();
+                x += state.sz + spacing;
+                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).rounding(10.0).build();
+                x += state.sz + spacing;
+                draw_list.add_rect((x, y), (x + state.sz, y + state.sz), state.col).filled(true).rounding(10.0).round_top_right(false).round_bot_left(false).build();
+                x += state.sz + spacing;
+            });
             ui.separator();
         });
 }
