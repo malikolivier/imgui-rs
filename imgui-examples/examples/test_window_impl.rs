@@ -783,7 +783,15 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                 let mut x = p.0 + 4.0;
                 let thickness = if n == 0 { 1.0 } else { 4.0 };
                 ui.with_window_draw_list(|draw_list| {
-                    // draw_list.add_circle((x + state.sz*0.5, y + state.sz*0.5)).build();
+                    draw_list
+                        .add_circle(
+                            (x + state.sz * 0.5, y + state.sz * 0.5),
+                            state.sz * 0.5,
+                            state.col,
+                        )
+                        .num_segments(20)
+                        .thickness(thickness)
+                        .build();
                     x += state.sz + spacing;
                     draw_list
                         .add_rect((x, y), (x + state.sz, y + state.sz), state.col)
@@ -825,7 +833,15 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
             }
             ui.with_window_draw_list(|draw_list| {
                 let mut x = p.0 + 4.0;
-                // Add circle
+                draw_list
+                    .add_circle(
+                        (x + state.sz * 0.5, y + state.sz * 0.5),
+                        state.sz * 0.5,
+                        state.col,
+                    )
+                    .num_segments(32)
+                    .filled(true)
+                    .build();
                 x += state.sz + spacing;
                 draw_list
                     .add_rect((x, y), (x + state.sz, y + state.sz), state.col)

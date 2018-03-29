@@ -139,6 +139,14 @@ macro_rules! impl_draw_list_methods {
                     );
                 }
             }
+
+            pub fn add_circle<P, C>(&self, center: P, radius: f32, color: C) -> Circle<'ui, $T>
+            where
+                P: Into<ImVec2>,
+                C: Into<ImColor>,
+            {
+                Circle::new(self, center, radius, color)
+            }
         }
     };
 }
@@ -276,6 +284,74 @@ impl<'ui, D: DrawAPI<'ui>> Rect<'ui, D> {
                     self.flags,
                     self.thickness,
                 );
+            }
+        }
+    }
+}
+
+pub struct Circle<'ui, D: 'ui> {
+    center: ImVec2,
+    radius: f32,
+    color: ImColor,
+    num_segments: u32,
+    thickness: f32,
+    filled: bool,
+    draw_list: &'ui D,
+}
+
+impl<'ui, D: DrawAPI<'ui>> Circle<'ui, D> {
+    pub fn new<P, C>(draw_list: &'ui D, center: P, radius: f32, color: C) -> Self
+    where
+        P: Into<ImVec2>,
+        C: Into<ImColor>,
+    {
+        Self {
+            center: center.into(),
+            radius,
+            color: color.into(),
+            num_segments: 12,
+            thickness: 1.0,
+            filled: false,
+            draw_list,
+        }
+    }
+
+    pub fn num_segments(mut self, num_segments: u32) -> Self {
+        self.num_segments = num_segments;
+        self
+    }
+
+    pub fn thickness(mut self, thickness: f32) -> Self {
+        self.thickness = thickness;
+        self
+    }
+
+    pub fn filled(mut self, filled: bool) -> Self {
+        self.filled = filled;
+        self
+    }
+
+    pub fn build(self) {
+        if self.filled {
+            unsafe {
+                sys::ImDrawList_AddCircleFilled(
+                    self.draw_list.draw_list(),
+                    self.center,
+                    self.radius,
+                    self.color.into(),
+                    self.num_segments as i32,
+                )
+            }
+        } else {
+            unsafe {
+                sys::ImDrawList_AddCircle(
+                    self.draw_list.draw_list(),
+                    self.center,
+                    self.radius,
+                    self.color.into(),
+                    self.num_segments as i32,
+                    self.thickness,
+                )
             }
         }
     }
