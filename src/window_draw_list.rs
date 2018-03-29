@@ -132,7 +132,7 @@ impl<'ui, D: DrawAPI<'ui>> Line<'ui, D> {
         }
     }
 
-    pub fn with_thickness(mut self, thickness: f32) -> Self {
+    pub fn thickness(mut self, thickness: f32) -> Self {
         self.thickness = thickness;
         self
     }

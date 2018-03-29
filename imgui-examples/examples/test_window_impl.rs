@@ -791,11 +791,11 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                     x += state.sz + spacing;
                     // Add rect
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x + state.sz, y), state.col).with_thickness(thickness).build();
+                    draw_list.add_line((x, y), (x + state.sz, y), state.col).thickness(thickness).build();
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x + state.sz, y + state.sz), state.col).with_thickness(thickness).build();
+                    draw_list.add_line((x, y), (x + state.sz, y + state.sz), state.col).thickness(thickness).build();
                     x += state.sz + spacing;
-                    draw_list.add_line((x, y), (x, y + state.sz), state.col).with_thickness(thickness).build();
+                    draw_list.add_line((x, y), (x, y + state.sz), state.col).thickness(thickness).build();
                     x += spacing;
                     // Add bezier curve
                 });
