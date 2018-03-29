@@ -846,6 +846,20 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                     .round_bot_left(false)
                     .build();
                 x += state.sz + spacing;
+                // Add triangle
+                x += state.sz + spacing;
+                const MULTICOLOR_RECT_CORNER_COLOR1: [f32; 3] = [0.0, 0.0, 0.0];
+                const MULTICOLOR_RECT_CORNER_COLOR2: [f32; 3] = [1.0, 0.0, 0.0];
+                const MULTICOLOR_RECT_CORNER_COLOR3: [f32; 3] = [1.0, 1.0, 0.0];
+                const MULTICOLOR_RECT_CORNER_COLOR4: [f32; 3] = [0.0, 1.0, 0.0];
+                draw_list.add_rect_filled_multicolor(
+                    (x, y),
+                    (x + state.sz, y + state.sz),
+                    MULTICOLOR_RECT_CORNER_COLOR1,
+                    MULTICOLOR_RECT_CORNER_COLOR2,
+                    MULTICOLOR_RECT_CORNER_COLOR3,
+                    MULTICOLOR_RECT_CORNER_COLOR4,
+                );
             });
             ui.separator();
         });

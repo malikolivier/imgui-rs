@@ -110,6 +110,35 @@ macro_rules! impl_draw_list_methods {
             {
                 Rect::new(self, p1, p2, c)
             }
+
+            pub fn add_rect_filled_multicolor<P1, P2, C1, C2, C3, C4>(
+                &self,
+                p1: P1,
+                p2: P2,
+                c1: C1,
+                c2: C2,
+                c3: C3,
+                c4: C4,
+            ) where
+                P1: Into<ImVec2>,
+                P2: Into<ImVec2>,
+                C1: Into<ImColor>,
+                C2: Into<ImColor>,
+                C3: Into<ImColor>,
+                C4: Into<ImColor>,
+            {
+                unsafe {
+                    sys::ImDrawList_AddRectFilledMultiColor(
+                        self.draw_list(),
+                        p1.into(),
+                        p2.into(),
+                        c1.into().into(),
+                        c2.into().into(),
+                        c3.into().into(),
+                        c4.into().into(),
+                    );
+                }
+            }
         }
     };
 }
