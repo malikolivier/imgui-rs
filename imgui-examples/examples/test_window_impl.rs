@@ -937,7 +937,7 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
             // ImDrawList API uses screen coordinates!
             let canvas_pos = ui.get_cursor_screen_pos();
             // Resize canvas to what's available
-            let mut canvas_size = (400.0, 400.0); //ui.get_content_region_avail();
+            let mut canvas_size = ui.get_content_region_avail();
             if canvas_size.0 < 50.0 {
                 canvas_size.0 = 50.0;
             }

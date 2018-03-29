@@ -518,6 +518,14 @@ impl<'ui> Ui<'ui> {
         let size = size.into();
         unsafe { sys::igDummy(&size as *const ImVec2) }
     }
+
+    pub fn get_content_region_avail(&self) -> (f32, f32) {
+        let mut out = ImVec2::new(0.0, 0.0);
+        unsafe {
+            sys::igGetContentRegionAvail(&mut out as *mut ImVec2);
+        }
+        (out.x, out.y)
+    }
 }
 
 // ID scopes
