@@ -813,6 +813,16 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                         .build();
                     x += state.sz + spacing;
                     draw_list
+                        .add_triangle(
+                            (x + state.sz * 0.5, y),
+                            (x + state.sz, y + state.sz - 0.5),
+                            (x, y + state.sz - 0.5),
+                            state.col,
+                        )
+                        .thickness(thickness)
+                        .build();
+                    x += state.sz + spacing;
+                    draw_list
                         .add_line((x, y), (x + state.sz, y), state.col)
                         .thickness(thickness)
                         .build();
@@ -862,7 +872,15 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                     .round_bot_left(false)
                     .build();
                 x += state.sz + spacing;
-                // Add triangle
+                draw_list
+                    .add_triangle(
+                        (x + state.sz * 0.5, y),
+                        (x + state.sz, y + state.sz - 0.5),
+                        (x, y + state.sz - 0.5),
+                        state.col,
+                    )
+                    .filled(true)
+                    .build();
                 x += state.sz + spacing;
                 const MULTICOLOR_RECT_CORNER_COLOR1: [f32; 3] = [0.0, 0.0, 0.0];
                 const MULTICOLOR_RECT_CORNER_COLOR2: [f32; 3] = [1.0, 0.0, 0.0];
