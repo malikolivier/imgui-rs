@@ -904,6 +904,7 @@ fn show_example_app_custom_rendering(ui: &Ui, state: &mut CustomRenderingState, 
                     MULTICOLOR_RECT_CORNER_COLOR4,
                 );
             });
+            ui.dummy(((state.sz + spacing) * 8.0, (state.sz + spacing) * 3.0));
             ui.separator();
         });
 }

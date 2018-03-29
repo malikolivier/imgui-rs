@@ -503,6 +503,11 @@ impl<'ui> Ui<'ui> {
     }
 
     pub fn get_columns_count(&self) -> i32 { unsafe { sys::igGetColumnsCount() } }
+
+    pub fn dummy<S: Into<ImVec2>>(&self, size: S) {
+        let size = size.into();
+        unsafe { sys::igDummy(&size as *const ImVec2) }
+    }
 }
 
 // ID scopes
