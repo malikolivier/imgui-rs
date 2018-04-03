@@ -95,7 +95,7 @@ impl<'ui, 'p> TreeNode<'ui, 'p> {
         self.flags.set(ImGuiTreeNodeFlags::FramePadding, value);
         self
     }
-    pub fn build<F: FnOnce()>(self, f: F) {
+    pub fn build<F: FnOnce()>(self, f: F) -> bool {
         let render = unsafe {
             if !self.opened_cond.is_empty() {
                 sys::igSetNextTreeNodeOpen(self.opened, self.opened_cond);
@@ -111,6 +111,7 @@ impl<'ui, 'p> TreeNode<'ui, 'p> {
             f();
             unsafe { sys::igTreePop() };
         }
+        render
     }
 }
 
