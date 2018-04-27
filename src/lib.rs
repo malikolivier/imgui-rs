@@ -10,13 +10,14 @@ use sys::ImGuiStyleVar;
 
 pub use sys::{ImDrawIdx, ImDrawVert, ImGuiColorEditFlags, ImGuiHoveredFlags, ImGuiInputTextFlags,
               ImGuiKey, ImGuiMouseCursor, ImGuiSelectableFlags, ImGuiCond, ImGuiCol, ImGuiStyle,
-              ImGuiTreeNodeFlags, ImGuiWindowFlags, ImVec2, ImVec4};
+              ImGuiTreeNodeFlags, ImGuiWindowFlags, ImTextureID, ImVec2, ImVec4};
 pub use child_frame::ChildFrame;
 pub use color_editors::{ColorButton, ColorEdit, ColorEditMode, ColorFormat, ColorPicker,
                         ColorPickerMode, ColorPreview, EditableColor};
 pub use drag::{DragFloat, DragFloat2, DragFloat3, DragFloat4, DragInt, DragInt2, DragInt3,
                DragInt4, DragFloatRange2, DragIntRange2};
 pub use fonts::{FontGlyphRange, ImFontAtlas, ImFont, ImFontConfig};
+pub use image::{GetTextureID, Image};
 pub use input::{InputFloat, InputFloat2, InputFloat3, InputFloat4, InputInt, InputInt2, InputInt3,
                 InputInt4, InputText};
 pub use menus::{Menu, MenuItem};
@@ -35,6 +36,7 @@ mod child_frame;
 mod color_editors;
 mod drag;
 mod fonts;
+mod image;
 mod input;
 mod menus;
 mod plothistogram;
@@ -1145,6 +1147,17 @@ impl<'ui> Ui<'ui> {
         size: S,
     ) -> ChildFrame<'ui, 'p> {
         ChildFrame::new(self, name, size.into())
+    }
+}
+
+// Widgets: Images
+impl<'ui> Ui<'ui> {
+    pub fn image<T, S>(&self, texture_id: T, size: S) -> Result<Image, String>
+    where
+        T: GetTextureID,
+        S: Into<ImVec2>,
+    {
+        Image::new(texture_id, size)
     }
 }
 
