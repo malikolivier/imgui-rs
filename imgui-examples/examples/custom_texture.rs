@@ -25,15 +25,22 @@ fn main() {
         image_data.push(row);
     }
     let texture_ref = app.register_texture(image_data).unwrap();
+    let (font_texture_id, font_texture_size) = {
+        let fonts = app.imgui_mut().fonts();
+        (fonts.get_texture_id().unwrap(), fonts.texture_size())
+    };
 
     app.run(|ui| {
         ui.window(im_str!("Custom texture"))
-            .size((300.0, 100.0), ImGuiCond::FirstUseEver)
+            .size((300.0, 400.0), ImGuiCond::FirstUseEver)
             .build(|| {
                 let tex_w = 100.0;
                 let tex_h = 100.0;
                 ui.image(&texture_ref, [tex_w, tex_h])
                     .expect("Texture not found")
+                    .build();
+                ui.image(font_texture_id, font_texture_size)
+                    .unwrap()
                     .build();
             });
         true

@@ -4,6 +4,8 @@ use std::os::raw::{c_int, c_void};
 use std::ptr;
 use sys;
 
+use image::GetTextureID;
+
 #[derive(Clone, Eq, PartialEq, Hash, Debug)]
 enum FontGlyphRangeData {
     Chinese, Cyrillic, Default, Japanese, Korean, Thai, Custom(*const sys::ImWchar),
@@ -306,5 +308,17 @@ impl <'a> ImFontAtlas<'a> {
     }
     pub fn set_texture_id(&mut self, value: usize) {
         unsafe { (*self.atlas).tex_id = value as *mut c_void; }
+    }
+
+    pub fn texture_size(&self) -> (f32, f32) {
+        unsafe {
+            ((*self.atlas).tex_width as f32, (*self.atlas).tex_height as f32)
+        }
+    }
+}
+
+impl<'a> GetTextureID for ImFontAtlas<'a> {
+    fn get_texture_id(&self) -> Option<sys::ImTextureID> {
+        Some(self.texture_id() as sys::ImTextureID)
     }
 }

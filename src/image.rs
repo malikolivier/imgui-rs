@@ -4,6 +4,10 @@ pub trait GetTextureID {
     fn get_texture_id(&self) -> Option<ImTextureID>;
 }
 
+impl GetTextureID for ImTextureID {
+    fn get_texture_id(&self) -> Option<ImTextureID> { Some(*self) }
+}
+
 pub struct Image {
     texture_id: ImTextureID,
     size: ImVec2,
