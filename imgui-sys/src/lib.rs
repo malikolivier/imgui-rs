@@ -358,6 +358,69 @@ bitflags!(
 );
 
 bitflags!(
+    /// Flags for igBeginCombo
+    #[repr(C)]
+    pub struct ImGuiComboFlags: c_int {
+        /// Align the popup toward the left by default
+        const PopupAlignLeft = 1 << 0;
+        /// Max ~4 items visible.
+        /// Tip: If you want your combo popup to be a specific size you can use
+        /// igSetNextWindowSizeConstraints() prior to calling igBeginCombo()
+        const HeightSmall    = 1 << 1;
+        /// Max ~8 items visible (default)
+        const HeightRegular  = 1 << 2;
+        /// Max ~20 items visible
+        const HeightLarge    = 1 << 3;
+        /// As many fitting items as possible
+        const HeightLargest  = 1 << 4;
+        const HeightMask     = ImGuiComboFlags::HeightSmall.bits
+            | ImGuiComboFlags::HeightRegular.bits
+            | ImGuiComboFlags::HeightLarge.bits
+            | ImGuiComboFlags::HeightLargest.bits;
+    }
+);
+
+bitflags!(
+    /// Flags for igBeginDragDropSource(), igAcceptDragDropPayload()
+    #[repr(C)]
+    pub struct ImGuiDragDropFlags: c_int {
+        // BeginDragDropSource() flags
+        /// By default, a successful call to igBeginDragDropSource opens a
+        /// tooltip so you can display a preview or description of the source
+        /// contents. This flag disable this behavior.
+        const SourceNoPreviewTooltip   = 1 << 0;
+        /// By default, when dragging we clear data so that igIsItemHovered()
+        /// will return true, to avoid subsequent user code submitting tooltips.
+        /// This flag disable this behavior so you can still call
+        /// igIsItemHovered() on the source item.
+        const SourceNoDisableHover     = 1 << 1;
+        /// Disable the behavior that allows to open tree nodes and collapsing
+        /// header by holding over them while dragging a source item.
+        const SourceNoHoldToOpenOthers = 1 << 2;
+        /// Allow items such as igText(), igImage() that have no unique
+        /// identifier to be used as drag source, by manufacturing a temporary
+        /// identifier based on their window-relative position. This is
+        /// extremely unusual within the dear imgui ecosystem and so we made it
+        /// explicit.
+        const SourceAllowNullID        = 1 << 3;
+        /// External source (from outside of imgui), won't attempt to read
+        /// current item/window info. Will always return true. Only one Extern
+        /// source can be active simultaneously.
+        const SourceExtern             = 1 << 4;
+        // AcceptDragDropPayload() flags
+        /// igAcceptDragDropPayload() will returns true even before the mouse
+        /// button is released. You can then call igIsDelivery() to test if the
+        /// payload needs to be delivered.
+        const AcceptBeforeDelivery     = 1 << 10;
+        /// Do not draw the default highlight rectangle when hovering over target.
+        const AcceptNoDrawDefaultRect  = 1 << 11;
+        /// For peeking ahead and inspecting the payload before delivery.
+        const AcceptPeekOnly           = ImGuiDragDropFlags::AcceptBeforeDelivery.bits
+            | ImGuiDragDropFlags::AcceptNoDrawDefaultRect.bits;
+    }
+);
+
+bitflags!(
     /// Flags for indictating which corner of a rectangle should be rounded
     #[repr(C)]
     pub struct ImDrawCornerFlags: c_int {
@@ -646,6 +709,28 @@ pub struct ImGuiTextFilter {
     pub input_buf: [c_char; 256],
     pub filters: ImVector<TextRange>,
     pub count_grep: c_int,
+}
+
+/// Data payload for Drag and Drop operations
+#[repr(C)]
+pub struct ImGuiPayload {
+    /// Data (copied and owned by dear imgui)
+    pub data: *const c_void,
+    /// Data size
+    pub data_size: c_int,
+
+    /// Source item id
+    source_id: ImGuiID,
+    /// Source parent id (if available)
+    source_parent_id: ImGuiID,
+    /// Data timestamp
+    data_frame_count: c_int,
+    /// Data type tag (short user-supplied string)
+    data_type: [c_char; 8 + 1],
+    /// Set when AcceptDragDropPayload() was called and mouse has been hovering the target item (nb: handle overlapping drag targets)
+    preview: bool,
+    /// Set when AcceptDragDropPayload() was called and mouse button is released over the target item.
+    delivery: bool,
 }
 
 #[repr(C)]
