@@ -3,6 +3,8 @@
 #[macro_use]
 extern crate bitflags;
 
+extern crate libc;
+
 #[cfg(feature = "gfx")]
 #[macro_use]
 extern crate gfx;
@@ -1748,6 +1750,16 @@ extern "C" {
     pub fn igLogFinish();
     pub fn igLogButtons();
     pub fn igLogText(fmt: *const c_char, ...);
+}
+
+// DragDrop
+extern "C" {
+    pub fn igBeginDragDropSource(flags: ImGuiDragDropFlags, mouse_button: c_int) -> bool;
+    pub fn igSetDragDropPayload(type_: *const c_char, data: *const c_void, size: libc::size_t, cond: ImGuiCond) -> bool;
+    pub fn igEndDragDropSource();
+    pub fn igBeginDragDropTarget() -> bool;
+    pub fn igAcceptDragDropPayload(type_: *const c_char, flags: ImGuiDragDropFlags) -> *const ImGuiPayload;
+    pub fn igEndDragDropTarget();
 }
 
 // Clipping
