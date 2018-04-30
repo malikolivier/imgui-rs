@@ -681,6 +681,7 @@ pub struct ImGuiIO {
     mouse_down_owned: [bool; 5],
     mouse_down_duration: [c_float; 5],
     mouse_down_duration_prev: [c_float; 5],
+    mouse_drag_max_distance_abs: [ImVec2; 5],
     mouse_drag_max_distance_sqr: [c_float; 5],
     keys_down_duration: [c_float; 512],
     keys_down_duration_prev: [c_float; 512],
@@ -1007,6 +1008,7 @@ extern "C" {
     pub fn igGetDrawData() -> *mut ImDrawData;
     pub fn igNewFrame();
     pub fn igRender();
+    pub fn igEndFrame();
     pub fn igShutdown();
 }
 
@@ -1015,6 +1017,8 @@ extern "C" {
     pub fn igShowDemoWindow(opened: *mut bool);
     pub fn igShowMetricsWindow(opened: *mut bool);
     pub fn igShowStyleEditor(style: *mut ImGuiStyle);
+    pub fn igShowStyleSelector(label: *const c_char);
+    pub fn igShowFontSelector(label: *const c_char);
     pub fn igShowUserGuide();
 }
 
@@ -1240,28 +1244,6 @@ extern "C" {
     pub fn igCheckboxFlags(label: *const c_char, flags: *mut c_uint, flags_value: c_uint) -> bool;
     pub fn igRadioButtonBool(label: *const c_char, active: bool) -> bool;
     pub fn igRadioButton(label: *const c_char, v: *mut c_int, v_button: c_int) -> bool;
-    pub fn igCombo(
-        label: *const c_char,
-        current_item: *mut c_int,
-        items: *const *const c_char,
-        items_count: c_int,
-        height_in_items: c_int,
-    ) -> bool;
-    pub fn igCombo2(
-        label: *const c_char,
-        current_item: *mut c_int,
-        items_separated_by_zeros: *const c_char,
-        height_in_items: c_int,
-    ) -> bool;
-    pub fn igCombo3(
-        label: *const c_char,
-        current_item: *mut c_int,
-        items_getter: extern "C" fn(data: *mut c_void, idx: c_int, out_text: *mut *const c_char)
-                                    -> bool,
-        data: *mut c_void,
-        items_count: c_int,
-        height_in_items: c_int,
-    ) -> bool;
     pub fn igPlotLines(
         label: *const c_char,
         values: *const c_float,
@@ -1307,6 +1289,37 @@ extern "C" {
         graph_size: ImVec2,
     );
     pub fn igProgressBar(fraction: c_float, size_arg: *const ImVec2, overlay: *const c_char);
+}
+
+// Combo
+extern "C" {
+    pub fn igBeginCombo(
+        label: *const c_char,
+        preview_value: *const c_char,
+        flags: ImGuiComboFlags,
+    ) -> bool;
+    pub fn igEndCombo();
+    pub fn igCombo(
+        label: *const c_char,
+        current_item: *mut c_int,
+        items: *const *const c_char,
+        items_count: c_int,
+        height_in_items: c_int,
+    ) -> bool;
+    pub fn igCombo2(
+        label: *const c_char,
+        current_item: *mut c_int,
+        items_separated_by_zeros: *const c_char,
+        height_in_items: c_int,
+    ) -> bool;
+    pub fn igCombo3(
+        label: *const c_char,
+        current_item: *mut c_int,
+        items_getter: extern "C" fn(data: *mut c_void, idx: c_int, out_text: *mut *const c_char) -> bool,
+        data: *mut c_void,
+        items_count: c_int,
+        height_in_items: c_int,
+    ) -> bool;
 }
 
 // Widgets: Color Editor/Picker
