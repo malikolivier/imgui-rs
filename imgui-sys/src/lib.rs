@@ -860,7 +860,7 @@ pub struct ImDrawList {
 }
 
 #[repr(C)]
-struct ImDrawListSharedData {
+pub struct ImDrawListSharedData {
     /// UV of white pixel in the atlas
     tex_uv_white_pixel: ImVec2,
     /// Current/default font (optional, for simplified AddText overload)
@@ -1090,7 +1090,6 @@ extern "C" {
     pub fn igSetScrollY(scroll_y: c_float);
     pub fn igSetScrollHere(center_y_ratio: c_float);
     pub fn igSetScrollFromPosY(pos_y: c_float, center_y_ratio: c_float);
-    pub fn igSetKeyboardFocusHere(offset: c_int);
     pub fn igSetStateStorage(tree: *mut ImGuiStorage);
     pub fn igGetStateStorage() -> *mut ImGuiStorage;
 }
@@ -1775,6 +1774,14 @@ extern "C" {
 // Styles
 extern "C" {
     pub fn igStyleColorsClassic(dst: *mut ImGuiStyle);
+    pub fn igStyleColorsDark(dst: *mut ImGuiStyle);
+    pub fn igStyleColorsLight(dst: *mut ImGuiStyle);
+}
+
+// Focus
+extern "C" {
+    pub fn igSetItemDefaultFocus();
+    pub fn igSetKeyboardFocusHere(offset: c_int);
 }
 
 // Utilities
@@ -1856,6 +1863,12 @@ pub unsafe fn igIsRootWindowOrAnyChildHovered(_flags: ImGuiHoveredFlags) -> bool
     igIsWindowHovered(ImGuiHoveredFlags::RootAndChildWindows)
 }
 
+// DrawList
+extern "C" {
+    pub fn igGetOverlayDrawList() -> *mut ImDrawList;
+    pub fn igGetDrawListSharedData() -> *mut ImDrawListSharedData;
+}
+
 // Inputs
 extern "C" {
     pub fn igGetKeyIndex(imgui_key: ImGuiKey) -> c_int;
@@ -1910,6 +1923,10 @@ extern "C" {
     pub fn igDestroyContext(ctx: *mut ImGuiContext);
     pub fn igGetCurrentContext() -> *mut ImGuiContext;
     pub fn igSetCurrentContext(ctx: *mut ImGuiContext);
+}
+
+extern "C" {
+    pub fn ImFontConfig_DefaultConstructor(config: *mut ImFontConfig);
 }
 
 // ImGuiIO
@@ -2177,6 +2194,17 @@ extern "C" {
         uv_c: ImVec2,
         uv_d: ImVec2,
         col: ImU32,
+    );
+    pub fn ImDrawList_AddImageRounded(
+        list: *mut ImDrawList,
+        user_texture_id: ImTextureID,
+        a: ImVec2,
+        b: ImVec2,
+        uv_a: ImVec2,
+        uv_b: ImVec2,
+        col: ImU32,
+        rounding: c_float,
+        rounding_corners: c_int,
     );
     pub fn ImDrawList_AddPolyLine(
         list: *mut ImDrawList,
