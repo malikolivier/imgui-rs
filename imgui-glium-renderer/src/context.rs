@@ -8,7 +8,7 @@ use glium::texture::{Texture2dDataSource, TextureCreationError};
 use glium::{glutin, Display, Surface, SwapBuffersError, Texture2d};
 
 use imgui::{ImGui, ImGuiMouseCursor, ImString, Ui};
-use render::{Renderer, RendererError, TextureRef};
+use render::{Renderer, RendererError};
 
 #[derive(Copy, Clone, PartialEq, Debug, Default)]
 struct MouseState {
@@ -142,18 +142,6 @@ impl AppContext {
             }
         }
         Ok(())
-    }
-
-    pub fn register_texture<'a, T>(&self, data: T) -> Result<TextureRef, TextureCreationError>
-    where
-        T: Texture2dDataSource<'a>,
-    {
-        let image_tex = Texture2d::new(&self.display, data)?;
-        Ok(self.renderer.register_texture(image_tex))
-    }
-
-    pub fn remove_texture(&self, texture_ref: TextureRef) -> Option<Rc<Texture2d>> {
-        self.renderer.remove_texture(texture_ref)
     }
 
     fn poll_events(&mut self) {

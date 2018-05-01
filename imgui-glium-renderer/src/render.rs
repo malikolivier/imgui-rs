@@ -60,7 +60,6 @@ impl From<DrawError> for RendererError {
 pub struct Renderer {
     ctx: Rc<Context>,
     device_objects: DeviceObjects,
-    textures: RefCell<Vec<Rc<Texture2d>>>,
 }
 
 impl Renderer {
@@ -69,7 +68,6 @@ impl Renderer {
         Ok(Renderer {
             ctx: Rc::clone(ctx.get_context()),
             device_objects: device_objects,
-            textures: RefCell::new(vec![]),
         })
     }
 
@@ -156,40 +154,6 @@ impl Renderer {
 
         Ok(())
     }
-    pub fn register_texture(&self, texture: Texture2d) -> TextureRef {
-        self.textures.borrow_mut().push(Rc::new(texture));
-        let ref_texture = Ref::map(self.textures.borrow(), |textures| textures.last().unwrap());
-        TextureRef(Rc::downgrade(&ref_texture))
-    }
-    pub fn remove_texture(&self, texture_ref: TextureRef) -> Option<Rc<Texture2d>> {
-        if let Some(texture_ref) = texture_ref.0.upgrade() {
-            if let Some(i) = self.textures
-                .borrow()
-                .iter()
-                .position(|texture| Rc::ptr_eq(&texture, &texture_ref))
-            {
-                Some(self.textures.borrow_mut().remove(i))
-            } else {
-                None
-            }
-        } else {
-            None
-        }
-    }
-}
-
-pub struct TextureRef(Weak<Texture2d>);
-
-impl GetTextureID for TextureRef {
-    fn get_texture_id(&self) -> Option<ImTextureID> { GetTextureID::get_texture_id(&self) }
-}
-
-impl<'a> GetTextureID for &'a TextureRef {
-    fn get_texture_id(&self) -> Option<ImTextureID> {
-        self.0
-            .upgrade()
-            .map(|texture| Rc::into_raw(texture) as ImTextureID)
-    }
 }
 
 pub struct Texture(Rc<Texture2d>);
@@ -203,6 +167,9 @@ impl IntoTexture<Texture> for Texture2d {
 impl GetTextureID for Texture {
     fn get_texture_id(&self) -> Option<ImTextureID> {
         Some(Rc::into_raw(self.0.clone()) as ImTextureID)
+    }
+    fn get_size(&self) -> (u32, u32) {
+        self.0.dimensions()
     }
 }
 

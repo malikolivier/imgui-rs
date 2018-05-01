@@ -4,36 +4,13 @@ use sys::{self, ImTextureID, ImVec2, ImVec4};
 
 pub trait GetTextureID {
     fn get_texture_id(&self) -> Option<ImTextureID>;
-}
-pub trait GetTextureSize {
-    fn get_size(&self) -> (u32, f32);
+    fn get_size(&self) -> (u32, u32);
 }
 
 pub trait IntoTexture<T>
 where T: GetTextureID,
 {
     fn into_texture(self) -> T;
-}
-
-impl GetTextureID for ImTextureID {
-    fn get_texture_id(&self) -> Option<ImTextureID> { Some(*self) }
-}
-
-impl<'a, T> GetTextureID for &'a Rc<Box<T>>
-where
-    T: GetTextureID,
-{
-    fn get_texture_id(&self) -> Option<ImTextureID> {
-        GetTextureID::get_texture_id(&****self)
-    }
-}
-impl<T> GetTextureID for Rc<Box<T>>
-where
-    T: GetTextureID,
-{
-    fn get_texture_id(&self) -> Option<ImTextureID> {
-        GetTextureID::get_texture_id(&***self)
-    }
 }
 
 #[derive(Clone)]
@@ -43,7 +20,13 @@ impl AnyTexture {
     pub(crate) fn new<T: 'static + GetTextureID>(texture: T) -> Self {
         AnyTexture(Rc::new(Box::new(texture)))
     }
+
+    pub fn get_size(&self) -> (f32, f32) {
+        let size = self.0.get_size();
+        (size.0 as f32, size.1 as f32)
+    }
 }
+
 
 pub struct Image {
     texture_id: ImTextureID,

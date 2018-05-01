@@ -310,9 +310,9 @@ impl <'a> ImFontAtlas<'a> {
         unsafe { (*self.atlas).tex_id = value as *mut c_void; }
     }
 
-    pub fn texture_size(&self) -> (f32, f32) {
+    pub fn texture_size(&self) -> (u32, u32) {
         unsafe {
-            ((*self.atlas).tex_width as f32, (*self.atlas).tex_height as f32)
+            ((*self.atlas).tex_width as u32, (*self.atlas).tex_height as u32)
         }
     }
 }
@@ -320,5 +320,8 @@ impl <'a> ImFontAtlas<'a> {
 impl<'a> GetTextureID for ImFontAtlas<'a> {
     fn get_texture_id(&self) -> Option<sys::ImTextureID> {
         Some(self.texture_id() as sys::ImTextureID)
+    }
+    fn get_size(&self) -> (u32, u32) {
+        self.texture_size()
     }
 }
