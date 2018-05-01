@@ -2,6 +2,7 @@ use std::cell::Ref;
 use std::rc::Rc;
 use std::time::Instant;
 
+use glium::backend::{Facade, Context};
 use glium::backend::glutin::DisplayCreationError;
 use glium::texture::{Texture2dDataSource, TextureCreationError};
 use glium::{glutin, Display, Surface, SwapBuffersError, Texture2d};
@@ -65,6 +66,12 @@ impl Default for AppConfig {
             window_width: 1024,
             window_height: 768,
         }
+    }
+}
+
+impl Facade for AppContext {
+    fn get_context(&self) -> &Rc<Context> {
+        self.display.get_context()
     }
 }
 

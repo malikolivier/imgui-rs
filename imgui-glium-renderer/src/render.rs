@@ -192,6 +192,20 @@ impl<'a> GetTextureID for &'a TextureRef {
     }
 }
 
+pub struct Texture(Rc<Texture2d>);
+
+impl From<Texture2d> for Texture {
+    fn from(tex: Texture2d) -> Self {
+        Texture(Rc::new(tex))
+    }
+}
+
+impl GetTextureID for Texture {
+    fn get_texture_id(&self) -> Option<ImTextureID> {
+        Some(Rc::into_raw(self.0.clone()) as ImTextureID)
+    }
+}
+
 pub struct DeviceObjects {
     vertex_buffer: VertexBuffer<ImDrawVert>,
     index_buffer: IndexBuffer<ImDrawIdx>,
