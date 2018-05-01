@@ -1,11 +1,48 @@
+use std::rc::Rc;
+
 use sys::{self, ImTextureID, ImVec2, ImVec4};
 
 pub trait GetTextureID {
     fn get_texture_id(&self) -> Option<ImTextureID>;
 }
+pub trait GetTextureSize {
+    fn get_size(&self) -> (u32, f32);
+}
+
+pub trait IntoTexture<T>
+where T: GetTextureID,
+{
+    fn into_texture(self) -> T;
+}
 
 impl GetTextureID for ImTextureID {
     fn get_texture_id(&self) -> Option<ImTextureID> { Some(*self) }
+}
+
+impl<'a, T> GetTextureID for &'a Rc<Box<T>>
+where
+    T: GetTextureID,
+{
+    fn get_texture_id(&self) -> Option<ImTextureID> {
+        GetTextureID::get_texture_id(&****self)
+    }
+}
+impl<T> GetTextureID for Rc<Box<T>>
+where
+    T: GetTextureID,
+{
+    fn get_texture_id(&self) -> Option<ImTextureID> {
+        GetTextureID::get_texture_id(&***self)
+    }
+}
+
+#[derive(Clone)]
+pub struct AnyTexture(Rc<Box<GetTextureID>>);
+
+impl AnyTexture {
+    pub(crate) fn new<T: 'static + GetTextureID>(texture: T) -> Self {
+        AnyTexture(Rc::new(Box::new(texture)))
+    }
 }
 
 pub struct Image {
@@ -18,9 +55,8 @@ pub struct Image {
 }
 
 impl Image {
-    pub fn new<T, S>(texture: T, size: S) -> Result<Image, String>
+    pub fn new<S>(texture: &AnyTexture, size: S) -> Result<Image, String>
     where
-        T: GetTextureID,
         S: Into<ImVec2>,
     {
         const DEFAULT_UV0: ImVec2 = ImVec2 { x: 0.0, y: 0.0 };
@@ -37,7 +73,7 @@ impl Image {
             z: 0.0,
             w: 0.0,
         };
-        if let Some(texture_id) = texture.get_texture_id() {
+        if let Some(texture_id) = texture.0.get_texture_id() {
             Ok(Image {
                 texture_id,
                 size: size.into(),

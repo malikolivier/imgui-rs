@@ -1,5 +1,10 @@
 pub extern crate imgui_sys as sys;
 
+use std::rc::Rc;
+use std::collections::hash_map::DefaultHasher;
+use std::collections::BTreeMap;
+use std::hash::Hasher;
+use std::cell::RefCell;
 use std::ffi::CStr;
 use std::mem;
 use std::os::raw::{c_char, c_float, c_int, c_uchar};
@@ -17,7 +22,7 @@ pub use color_editors::{ColorButton, ColorEdit, ColorEditMode, ColorFormat, Colo
 pub use drag::{DragFloat, DragFloat2, DragFloat3, DragFloat4, DragInt, DragInt2, DragInt3,
                DragInt4, DragFloatRange2, DragIntRange2};
 pub use fonts::{FontGlyphRange, ImFontAtlas, ImFont, ImFontConfig};
-pub use image::{GetTextureID, Image};
+pub use image::{AnyTexture, GetTextureID, Image, IntoTexture};
 pub use input::{InputFloat, InputFloat2, InputFloat3, InputFloat4, InputInt, InputInt2, InputInt3,
                 InputInt4, InputText};
 pub use menus::{Menu, MenuItem};
@@ -54,6 +59,7 @@ pub struct ImGui {
     // lives long enough in case the ImStr contains a Cow::Owned
     ini_filename: Option<ImString>,
     log_filename: Option<ImString>,
+    textures: RefCell<BTreeMap<u64, AnyTexture>>,
 }
 
 #[macro_export]
@@ -106,6 +112,7 @@ impl ImGui {
         ImGui {
             ini_filename: None,
             log_filename: None,
+            textures: RefCell::new(BTreeMap::new()),
         }
     }
     fn io(&self) -> &sys::ImGuiIO { unsafe { &*sys::igGetIO() } }
@@ -339,6 +346,27 @@ impl ImGui {
         }
         Ui { imgui: self }
     }
+
+    pub fn register_texture<T: 'static + GetTextureID>(&self, name: &ImStr, texture: T) -> Option<AnyTexture> {
+        let id = hash_imstring(name);
+        self.textures.borrow_mut().insert(id, AnyTexture::new(texture))
+    }
+
+    pub fn remove_texture(&self, name: &ImStr) -> Option<AnyTexture> {
+        let id = hash_imstring(name);
+        self.textures.borrow_mut().remove(&id)
+    }
+
+    pub fn get_texture(&self, name: &ImStr) -> Option<AnyTexture> {
+        let id = hash_imstring(name);
+        self.textures.borrow().get(&id).map(Clone::clone)
+    }
+}
+
+fn hash_imstring(string: &ImStr) -> u64 {
+    let mut h = DefaultHasher::new();
+    h.write(string.to_str().as_bytes());
+    h.finish()
 }
 
 impl Drop for ImGui {
@@ -1152,12 +1180,11 @@ impl<'ui> Ui<'ui> {
 
 // Widgets: Images
 impl<'ui> Ui<'ui> {
-    pub fn image<T, S>(&self, texture_id: T, size: S) -> Result<Image, String>
+    pub fn image<S>(&self, texture: &AnyTexture, size: S) -> Result<Image, String>
     where
-        T: GetTextureID,
         S: Into<ImVec2>,
     {
-        Image::new(texture_id, size)
+        Image::new(&texture, size)
     }
 }
 
@@ -1370,5 +1397,24 @@ impl<'ui> Ui<'ui> {
     /// ```
     pub fn get_window_draw_list(&'ui self) -> WindowDrawList<'ui> {
         WindowDrawList::new(self)
+    }
+}
+
+/// # Custom textures
+impl<'ui> Ui<'ui> {
+    pub fn make_texture<F, T, U>(&self, name: &ImStr, f: F) -> AnyTexture
+    where
+        F: FnOnce() -> T,
+        T: IntoTexture<U>,
+        U: 'static + GetTextureID,
+    {
+        let imgui = self.imgui();
+        if let Some(texture) = imgui.get_texture(name) {
+            texture
+        } else {
+            let texture = f().into_texture();
+            imgui.register_texture(name, texture);
+            imgui.get_texture(name).unwrap()
+        }
     }
 }

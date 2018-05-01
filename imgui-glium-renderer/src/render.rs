@@ -6,7 +6,7 @@ use glium::program;
 use glium::texture;
 use glium::vertex;
 use glium::{DrawError, GlObject, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
-use imgui::{DrawList, GetTextureID, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
+use imgui::{DrawList, GetTextureID, IntoTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
 use std::borrow::Cow;
 use std::cell::{Ref, RefCell};
 use std::fmt;
@@ -194,9 +194,9 @@ impl<'a> GetTextureID for &'a TextureRef {
 
 pub struct Texture(Rc<Texture2d>);
 
-impl From<Texture2d> for Texture {
-    fn from(tex: Texture2d) -> Self {
-        Texture(Rc::new(tex))
+impl IntoTexture<Texture> for Texture2d {
+    fn into_texture(self) -> Texture {
+        Texture(Rc::new(self))
     }
 }
 
