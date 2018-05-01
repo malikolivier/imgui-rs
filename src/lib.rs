@@ -1405,14 +1405,14 @@ impl<'ui> Ui<'ui> {
     pub fn make_texture<F, T, U>(&self, name: &ImStr, f: F) -> AnyTexture
     where
         F: FnOnce() -> T,
-        T: IntoTexture<U>,
+        T: Into<U>,
         U: 'static + GetTextureID,
     {
         let imgui = self.imgui();
         if let Some(texture) = imgui.get_texture(name) {
             texture
         } else {
-            let texture = f().into_texture();
+            let texture = f().into();
             imgui.register_texture(name, texture);
             imgui.get_texture(name).unwrap()
         }
