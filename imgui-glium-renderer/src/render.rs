@@ -166,11 +166,11 @@ impl IntoTexture<Texture> for Texture2d {
 }
 
 
-pub fn original_texture(texture: &AnyTexture) -> &Rc<Texture2d> {
+pub fn original_texture(texture: &AnyTexture) -> &Texture2d {
     let texture = texture.get_texture_id().unwrap();
     unsafe {
-        let texture: &Texture = mem::transmute(texture);
-        &texture.0
+        let texture: &Texture2d = mem::transmute(texture);
+        &texture
     }
 }
 
