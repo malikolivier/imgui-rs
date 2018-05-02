@@ -35,8 +35,10 @@ pub use style::StyleVar;
 pub use sys::{
     ImDrawIdx, ImDrawVert, ImGuiCol, ImGuiColorEditFlags, ImGuiCond, ImGuiHoveredFlags,
     ImGuiInputTextFlags, ImGuiKey, ImGuiMouseCursor, ImGuiSelectableFlags, ImGuiStyle,
-    ImGuiTreeNodeFlags, ImGuiWindowFlags, ImVec2, ImVec4,
+    ImGuiTreeNodeFlags, ImGuiWindowFlags, ImTextureID, ImVec2, ImVec4,
 };
+use texture::TextureCache;
+pub use texture::{AnyTexture, FromImTexture, ImTexture, IntoImTexture};
 pub use trees::{CollapsingHeader, TreeNode};
 pub use window::Window;
 pub use window_draw_list::{ChannelsSplit, ImColor, WindowDrawList};
@@ -53,6 +55,7 @@ mod progressbar;
 mod sliders;
 mod string;
 mod style;
+mod texture;
 mod trees;
 mod window;
 mod window_draw_list;
@@ -62,6 +65,7 @@ pub struct ImGui {
     // lives long enough in case the ImStr contains a Cow::Owned
     ini_filename: Option<ImString>,
     log_filename: Option<ImString>,
+    textures: TextureCache,
 }
 
 #[macro_export]
@@ -129,6 +133,7 @@ impl ImGui {
         ImGui {
             ini_filename: None,
             log_filename: None,
+            textures: TextureCache::new(),
         }
     }
     fn io(&self) -> &sys::ImGuiIO {
@@ -1593,5 +1598,35 @@ impl<'ui> Ui<'ui> {
     /// ```
     pub fn get_window_draw_list(&'ui self) -> WindowDrawList<'ui> {
         WindowDrawList::new(self)
+    }
+}
+
+/// # Custom textures
+impl<'ui> Ui<'ui> {
+    pub fn make_texture<F, T, U>(&self, name: &ImStr, f: F) -> AnyTexture
+    where
+        F: FnOnce() -> T,
+        T: IntoImTexture<U>,
+        U: 'static + ImTexture,
+    {
+        let imgui = self.imgui();
+        if let Some(texture) = imgui.textures.get_texture(name) {
+            texture
+        } else {
+            let texture = f().into_texture();
+            imgui.textures.register_texture(name, texture);
+            imgui.textures.get_texture(name).unwrap()
+        }
+    }
+
+    pub fn replace_texture<T, U>(&self, name: &ImStr, t: T) -> AnyTexture
+    where
+        T: IntoImTexture<U>,
+        U: 'static + ImTexture,
+    {
+        let imgui = self.imgui();
+        let texture = t.into_texture();
+        imgui.textures.register_texture(name, texture);
+        imgui.textures.get_texture(name).unwrap()
     }
 }

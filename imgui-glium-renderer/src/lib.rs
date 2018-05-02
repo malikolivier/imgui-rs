@@ -2,6 +2,9 @@
 extern crate glium;
 extern crate imgui;
 
+mod im_texture;
+pub use im_texture::Texture;
+
 use glium::backend::{Context, Facade};
 use glium::index::{self, PrimitiveType};
 use glium::program;
