@@ -156,11 +156,11 @@ impl Renderer {
     }
 }
 
-pub struct Texture(Rc<Texture2d>);
+pub struct Texture(Texture2d);
 
 impl IntoTexture<Texture> for Texture2d {
     fn into_texture(self) -> Texture {
-        Texture(Rc::new(self))
+        Texture(self)
     }
 }
 
@@ -175,7 +175,7 @@ pub fn original_texture(texture: &AnyTexture) -> &Texture2d {
 
 impl GetTextureID for Texture {
     fn get_texture_id(&self) -> Option<ImTextureID> {
-        Some(Rc::into_raw(self.0.clone()) as ImTextureID)
+        Some(unsafe { mem::transmute(&self.0) })
     }
     fn get_size(&self) -> (u32, u32) {
         self.0.dimensions()
