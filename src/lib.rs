@@ -1417,4 +1417,15 @@ impl<'ui> Ui<'ui> {
             imgui.get_texture(name).unwrap()
         }
     }
+
+    pub fn replace_texture<T, U>(&self, name: &ImStr, t: T) -> AnyTexture
+    where
+        T: IntoTexture<U>,
+        U: 'static + GetTextureID,
+    {
+        let imgui = self.imgui();
+        let texture = t.into_texture();
+        imgui.register_texture(name, texture);
+        imgui.get_texture(name).unwrap()
+    }
 }
