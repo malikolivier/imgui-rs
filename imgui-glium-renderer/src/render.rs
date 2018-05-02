@@ -8,10 +8,9 @@ use glium::vertex;
 use glium::{DrawError, GlObject, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
 use imgui::{DrawList, GetTextureID, AnyTexture, IntoTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
 use std::borrow::Cow;
-use std::cell::{Ref, RefCell};
 use std::fmt;
 use std::mem;
-use std::rc::{Rc, Weak};
+use std::rc::Rc;
 
 
 pub type RendererResult<T> = Result<T, RendererError>;
