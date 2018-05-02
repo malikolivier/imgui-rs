@@ -159,9 +159,9 @@ impl Renderer {
 
 pub struct Texture(Rc<Texture2d>);
 
-impl From<Texture2d> for Texture {
-    fn from(texture: Texture2d) -> Self {
-        Texture(Rc::new(texture))
+impl IntoTexture<Texture> for Texture2d {
+    fn into_texture(self) -> Texture {
+        Texture(Rc::new(self))
     }
 }
 
