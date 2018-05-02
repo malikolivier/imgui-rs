@@ -126,13 +126,11 @@ impl Renderer {
                     &uniform! {
                         matrix: matrix,
                         tex: if cmd.texture_id as usize == font_texture_id {
-                            self.device_objects.texture.sampled()
+                            &self.device_objects.texture
                         } else {
-                            unsafe {
-                                let texture: &Texture2d = mem::transmute(cmd.texture_id);
-                                texture.sampled()
-                            }
+                            &Texture::from_id(cmd.texture_id).0
                         }
+                            .sampled()
                             .magnify_filter(MagnifySamplerFilter::Nearest)
                             .minify_filter(MinifySamplerFilter::Nearest),
                     },
@@ -164,18 +162,32 @@ impl IntoTexture<Texture> for Texture2d {
     }
 }
 
-
-pub fn original_texture(texture: &AnyTexture) -> &Texture2d {
-    let texture = texture.get_texture_id().unwrap();
-    unsafe {
-        let texture: &Texture2d = mem::transmute(texture);
-        &texture
+impl Texture {
+    pub fn from(any_texture: &AnyTexture) -> &Self {
+        let texture = any_texture.get_texture_id().unwrap();
+        Self::from_id(texture)
+    }
+    fn from_id<'a>(texture_id: ImTextureID) -> &'a Self {
+        unsafe {
+            let texture: &Texture = mem::transmute(texture_id);
+            &texture
+        }
     }
 }
 
+use std::ops::Deref;
+
+impl Deref for Texture {
+    type Target = Texture2d;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+
 impl GetTextureID for Texture {
     fn get_texture_id(&self) -> Option<ImTextureID> {
-        Some(unsafe { mem::transmute(&self.0) })
+        Some(unsafe { mem::transmute(self) })
     }
     fn get_size(&self) -> (u32, u32) {
         self.0.dimensions()
