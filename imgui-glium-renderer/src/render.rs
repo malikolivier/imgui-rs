@@ -6,12 +6,13 @@ use glium::program;
 use glium::texture;
 use glium::vertex;
 use glium::{DrawError, GlObject, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
-use imgui::{DrawList, GetTextureID, IntoTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
+use imgui::{DrawList, GetTextureID, AnyTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
 use std::borrow::Cow;
 use std::cell::{Ref, RefCell};
 use std::fmt;
 use std::mem;
 use std::rc::{Rc, Weak};
+
 
 pub type RendererResult<T> = Result<T, RendererError>;
 
@@ -161,6 +162,15 @@ pub struct Texture(Rc<Texture2d>);
 impl From<Texture2d> for Texture {
     fn from(texture: Texture2d) -> Self {
         Texture(Rc::new(texture))
+    }
+}
+
+
+pub fn original_texture(texture: &AnyTexture) -> &Rc<Texture2d> {
+    let texture = texture.get_texture_id().unwrap();
+    unsafe {
+        let texture: &Texture = mem::transmute(texture);
+        &texture.0
     }
 }
 

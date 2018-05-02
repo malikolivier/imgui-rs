@@ -22,7 +22,7 @@ pub use color_editors::{ColorButton, ColorEdit, ColorEditMode, ColorFormat, Colo
 pub use drag::{DragFloat, DragFloat2, DragFloat3, DragFloat4, DragInt, DragInt2, DragInt3,
                DragInt4, DragFloatRange2, DragIntRange2};
 pub use fonts::{FontGlyphRange, ImFontAtlas, ImFont, ImFontConfig};
-pub use image::{AnyTexture, GetTextureID, Image, IntoTexture};
+pub use image::{AnyTexture, GetTextureID, Image};
 pub use input::{InputFloat, InputFloat2, InputFloat3, InputFloat4, InputInt, InputInt2, InputInt3,
                 InputInt4, InputText};
 pub use menus::{Menu, MenuItem};

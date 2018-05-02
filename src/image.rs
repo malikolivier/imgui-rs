@@ -7,12 +7,6 @@ pub trait GetTextureID {
     fn get_size(&self) -> (u32, u32);
 }
 
-pub trait IntoTexture<T>
-where T: GetTextureID,
-{
-    fn into_texture(self) -> T;
-}
-
 #[derive(Clone)]
 pub struct AnyTexture(Rc<Box<GetTextureID>>);
 
@@ -24,6 +18,15 @@ impl AnyTexture {
     pub fn get_size(&self) -> (f32, f32) {
         let size = self.0.get_size();
         (size.0 as f32, size.1 as f32)
+    }
+}
+
+use std::ops::Deref;
+
+impl Deref for AnyTexture {
+    type Target = Box<GetTextureID>;
+    fn deref(&self) -> &Self::Target {
+        Deref::deref(&self.0)
     }
 }
 

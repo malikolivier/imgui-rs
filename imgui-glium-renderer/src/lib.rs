@@ -6,3 +6,4 @@ mod context;
 mod render;
 
 pub use context::{AppConfig, AppContext};
+pub use render::original_texture;
