@@ -30,6 +30,12 @@ impl Deref for AnyTexture {
     }
 }
 
+pub trait IntoTexture<T>
+where T: GetTextureID,
+{
+    fn into_texture(self) -> T;
+}
+
 
 pub struct Image {
     texture_id: ImTextureID,

@@ -6,7 +6,7 @@ use glium::program;
 use glium::texture;
 use glium::vertex;
 use glium::{DrawError, GlObject, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
-use imgui::{DrawList, GetTextureID, AnyTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
+use imgui::{DrawList, GetTextureID, AnyTexture, IntoTexture, ImDrawIdx, ImDrawVert, ImGui, ImTextureID, Ui};
 use std::borrow::Cow;
 use std::cell::{Ref, RefCell};
 use std::fmt;
