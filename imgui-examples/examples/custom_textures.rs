@@ -31,7 +31,7 @@ fn main() {
 
                 // Constant texture (define once)
                 ui.text("Constant texture");
-                let constant_texture = ui.make_texture(im_str!("#Constant"), || {
+                let constant_texture = ui.make_texture::<_, _, Texture>(im_str!("#Constant"), || {
                     let mut image_data: Vec<Vec<(f32, f32, f32, f32)>> = Vec::new();
                     for i in 0..100 {
                         let mut row: Vec<(f32, f32, f32, f32)> = Vec::new();
@@ -48,7 +48,7 @@ fn main() {
 
                 // Changing texture (re-defined and swap texture for each frame)
                 ui.text("Variable texture");
-                let changing_texture = ui.replace_texture(im_str!("#Changing"), {
+                let changing_texture = ui.replace_texture::<_, Texture>(im_str!("#Changing"), {
                     let mut image_data: Vec<Vec<(f32, f32, f32, f32)>> = Vec::new();
                     for i in 0..100 {
                         let mut row: Vec<(f32, f32, f32, f32)> = Vec::new();
@@ -69,7 +69,7 @@ fn main() {
 
                 // Texture defined only once, however, you can dynamically draw on it.
                 ui.text("Draw on texture");
-                let draw_texture = ui.make_texture(im_str!("#Draw"), || {
+                let draw_texture = ui.make_texture::<_, _, Texture>(im_str!("#Draw"), || {
                     Texture2d::empty(&gl_ctx, 100, 100).unwrap()
                 });
                 // Get the texture as a surface. It must first be converted to a
