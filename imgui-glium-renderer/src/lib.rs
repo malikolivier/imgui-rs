@@ -221,7 +221,7 @@ impl DeviceObjects {
         let index_buffer = IndexBuffer::empty_dynamic(ctx, PrimitiveType::TrianglesList, 0)?;
 
         let program = compile_default_program(ctx)?;
-        let texture = im_gui.register_font_texture(|handle| {
+        let texture = im_gui.register_font_texture::<_, _, Texture, _>(|handle| {
             let data = RawImage2d {
                 data: Cow::Borrowed(handle.pixels),
                 width: handle.width,

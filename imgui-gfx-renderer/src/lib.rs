@@ -2,6 +2,8 @@
 extern crate gfx;
 extern crate imgui;
 
+mod im_texture;
+
 use gfx::handle::{Buffer, RenderTargetView};
 use gfx::memory::Bind;
 use gfx::texture::{FilterMethod, SamplerInfo, WrapMode};

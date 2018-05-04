@@ -19,9 +19,9 @@ impl ImTexture for Texture {
     }
 }
 
-impl IntoImTexture<Texture> for Texture2d {
-    fn into_texture(self) -> Texture {
-        Texture(self)
+impl IntoImTexture<Texture2d> for Texture {
+    fn into_texture(texture: Texture2d) -> Texture {
+        Texture(texture)
     }
 }
 
