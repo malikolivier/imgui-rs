@@ -146,15 +146,14 @@ impl ImGui {
     pub fn register_font_texture<'a, F, T, U, E>(&mut self, f: F) -> Result<AnyTexture, E>
     where
         F: FnOnce(FontTextureHandle<'a>) -> Result<T, E>,
-        T: IntoImTexture<U>,
-        U: 'static + ImTexture,
+        U: 'static + IntoImTexture<T> + ImTexture,
     {
         let io = self.io();
         let mut pixels: *mut c_uchar = ptr::null_mut();
         let mut width: c_int = 0;
         let mut height: c_int = 0;
         let mut bytes_per_pixel: c_int = 0;
-        let texture = unsafe {
+        let texture: U = unsafe {
             sys::ImFontAtlas_GetTexDataAsRGBA32(
                 io.fonts,
                 &mut pixels,
@@ -162,11 +161,11 @@ impl ImGui {
                 &mut height,
                 &mut bytes_per_pixel,
             );
-            f(FontTextureHandle {
+            IntoImTexture::into_texture(f(FontTextureHandle {
                 width: width as u32,
                 height: height as u32,
                 pixels: slice::from_raw_parts(pixels, (width * height * bytes_per_pixel) as usize),
-            })?.into_texture()
+            })?)
         };
         self.textures.register_texture(im_str!("#FONT"), texture);
         Ok(self.textures.get_texture(im_str!("#FONT")).unwrap())
@@ -1208,7 +1207,7 @@ impl<'ui> Ui<'ui> {
     /// use glium::backend::Facade;
     ///
     /// fn make_a_texture<F: Facade>(ui: &Ui, facade: &F, data: Vec<Vec<(u8, u8, u8, u8)>>) {
-    ///     let texture_handle = ui.replace_texture(
+    ///     let texture_handle = ui.replace_texture::<_, imgui_glium_renderer::Texture>(
     ///         im_str!("#Texture Name ID"),
     ///         Texture2d::new(facade, data).unwrap(),
     ///     );
@@ -1473,7 +1472,7 @@ impl<'ui> Ui<'ui> {
     /// use glium::backend::Facade;
     ///
     /// fn make_a_texture<F: Facade>(ui: &Ui, facade: &F) {
-    ///     let texture_handle = ui.make_texture(im_str!("#Texture Name ID"), || {
+    ///     let texture_handle = ui.make_texture::<_, _, imgui_glium_renderer::Texture>(im_str!("#Texture Name ID"), || {
     ///         Texture2d::empty(facade, 100, 100).unwrap()
     ///     });
     ///     // ... Do something with `texture_handle`
@@ -1484,14 +1483,13 @@ impl<'ui> Ui<'ui> {
     pub fn make_texture<F, T, U>(&self, name: &ImStr, f: F) -> AnyTexture
     where
         F: FnOnce() -> T,
-        T: IntoImTexture<U>,
-        U: 'static + ImTexture,
+        U: 'static + IntoImTexture<T> + ImTexture,
     {
         let imgui = self.imgui();
         if let Some(texture) = imgui.textures.get_texture(name) {
             texture
         } else {
-            let texture = f().into_texture();
+            let texture: U = IntoImTexture::into_texture(f());
             imgui.textures.register_texture(name, texture);
             imgui.textures.get_texture(name).unwrap()
         }
@@ -1517,7 +1515,7 @@ impl<'ui> Ui<'ui> {
     /// use glium::backend::Facade;
     ///
     /// fn make_a_texture<F: Facade>(ui: &Ui, facade: &F, data: Vec<Vec<(u8, u8, u8, u8)>>) {
-    ///     let texture_handle = ui.replace_texture(
+    ///     let texture_handle = ui.replace_texture::<_, imgui_glium_renderer::Texture>(
     ///         im_str!("#Texture Name ID"),
     ///         Texture2d::new(facade, data).unwrap(),
     ///     );
@@ -1528,11 +1526,10 @@ impl<'ui> Ui<'ui> {
     /// ```
     pub fn replace_texture<T, U>(&self, name: &ImStr, t: T) -> AnyTexture
     where
-        T: IntoImTexture<U>,
-        U: 'static + ImTexture,
+        U: 'static + IntoImTexture<T> + ImTexture,
     {
         let imgui = self.imgui();
-        let texture = t.into_texture();
+        let texture: U = IntoImTexture::into_texture(t);
         imgui.textures.register_texture(name, texture);
         imgui.textures.get_texture(name).unwrap()
     }
