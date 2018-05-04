@@ -2,6 +2,8 @@
 extern crate gfx;
 extern crate imgui;
 
+mod im_texture;
+
 use gfx::{Bundle, CommandBuffer, Encoder, Factory, IntoIndexBuffer, Rect, Resources, Slice};
 use gfx::memory::Bind;
 use gfx::handle::{Buffer, RenderTargetView};

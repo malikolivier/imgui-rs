@@ -209,7 +209,7 @@ impl DeviceObjects {
         ));
 
         let program = try!(compile_default_program(ctx));
-        let texture = try!(im_gui.register_font_texture(|handle| {
+        let texture = try!(im_gui.register_font_texture::<_, _, Texture, _>(|handle| {
             let data = RawImage2d {
                 data: Cow::Borrowed(handle.pixels),
                 width: handle.width,
