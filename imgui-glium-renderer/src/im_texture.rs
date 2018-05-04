@@ -15,8 +15,8 @@ impl ImTexture for Texture {
     fn get_size(&self) -> (u32, u32) { self.0.dimensions() }
 }
 
-impl IntoImTexture<Texture> for Texture2d {
-    fn into_texture(self) -> Texture { Texture(self) }
+impl IntoImTexture<Texture2d> for Texture {
+    fn into_texture(texture: Texture2d) -> Texture { Texture(texture) }
 }
 
 impl Deref for Texture {
