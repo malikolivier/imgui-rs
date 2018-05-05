@@ -3,13 +3,16 @@ extern crate gfx;
 extern crate imgui;
 
 mod im_texture;
+pub use im_texture::Texture;
+
+use std::ops::Deref;
 
 use gfx::{Bundle, CommandBuffer, Encoder, Factory, IntoIndexBuffer, Rect, Resources, Slice};
 use gfx::memory::Bind;
 use gfx::handle::{Buffer, RenderTargetView};
 use gfx::texture::{FilterMethod, SamplerInfo, WrapMode};
 use gfx::traits::FactoryExt;
-use imgui::{DrawList, ImDrawIdx, ImDrawVert, ImGui, Ui};
+use imgui::{DrawList, FromImTexture, ImDrawIdx, ImDrawVert, ImGui, Ui};
 
 pub type RendererResult<T> = Result<T, RendererError>;
 
@@ -91,7 +94,10 @@ impl Shaders {
 pub struct Renderer<R: Resources> {
     bundle: Bundle<R, pipe::Data<R>>,
     index_buffer: Buffer<R, u16>,
+    font_texture: gfx::handle::ShaderResourceView<R, [f32; 4]>,
 }
+
+const FONT_TEXTURE_ID: usize = 0;
 
 impl<R: Resources> Renderer<R> {
     pub fn init<F: Factory<R>>(
@@ -129,7 +135,8 @@ impl<R: Resources> Renderer<R> {
                 &[handle.pixels],
             )
         })?;
-        // TODO: set texture id in imgui
+        imgui.set_texture_id(FONT_TEXTURE_ID);
+
         let sampler =
             factory.create_sampler(SamplerInfo::new(FilterMethod::Scale, WrapMode::Clamp));
         let data = pipe::Data {
@@ -140,7 +147,7 @@ impl<R: Resources> Renderer<R> {
                 [0.0, 0.0, -1.0, 0.0],
                 [-1.0, 1.0, 0.0, 1.0],
             ],
-            tex: (texture, sampler),
+            tex: (texture.clone(), sampler),
             out: out,
             scissor: Rect {
                 x: 0,
@@ -159,6 +166,7 @@ impl<R: Resources> Renderer<R> {
         Ok(Renderer {
             bundle: Bundle::new(slice, pso, data),
             index_buffer: index_buffer,
+            font_texture: texture,
         })
     }
     pub fn update_render_target(&mut self, out: RenderTargetView<R, gfx::format::Rgba8>) {
@@ -204,7 +212,11 @@ impl<R: Resources> Renderer<R> {
 
         self.bundle.slice.start = 0;
         for cmd in draw_list.cmd_buffer {
-            // TODO: check cmd.texture_id
+            self.bundle.data.tex.0 = if cmd.texture_id as usize == FONT_TEXTURE_ID {
+                self.font_texture.clone()
+            } else {
+                <Texture<R> as FromImTexture>::from_id(cmd.texture_id).deref().clone()
+            };
 
             self.bundle.slice.end = self.bundle.slice.start + cmd.elem_count;
             self.bundle.data.scissor = Rect {
