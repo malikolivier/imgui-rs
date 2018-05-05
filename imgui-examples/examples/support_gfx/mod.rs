@@ -182,6 +182,12 @@ pub fn run<F: FnMut(&Ui) -> bool>(title: String, clear_color: [f32; 4], mut run_
         );
 
         let ui = imgui.frame(size_points, size_pixels, delta_s);
+        use imgui_gfx_renderer::Texture;
+        let texture = ui.make_texture::<_, _, Texture<_>>(im_str!("#STANDARD"), || gfx_load_texture(&mut factory));
+        ui.image(&texture, (100.0, 100.0)).build();
+        let texture = ui.replace_texture::<_, Texture<_>>(im_str!("#CHANGE"), gfx_load_texture_change(&mut factory));
+        ui.image(&texture, (100.0, 100.0)).build();
+
         if !run_ui(&ui) {
             break;
         }
@@ -237,4 +243,54 @@ fn update_mouse(imgui: &mut ImGui, mouse_state: &mut MouseState) {
     );
     imgui.set_mouse_wheel(mouse_state.wheel / scale.1);
     mouse_state.wheel = 0.0;
+}
+
+use gfx;
+
+fn gfx_load_texture<F, R>(factory: &mut F) -> gfx::handle::ShaderResourceView<R, [f32; 4]>
+where
+    F: gfx::Factory<R>,
+    R: gfx::Resources,
+{
+    use gfx::format::Rgba8;
+    let mut data = Vec::new();
+    let (width, height) = (100, 100);
+    for i in 0..width {
+        for j in 0..height {
+            data.push(i as u8);
+            data.push(j as u8);
+            data.push(255u8);
+            data.push(255u8);
+        }
+    }
+    let kind = gfx::texture::Kind::D2(width as u16, height as u16, gfx::texture::AaMode::Single);
+    let (_, view) = factory
+        .create_texture_immutable_u8::<Rgba8>(kind, gfx::texture::Mipmap::Provided, &[&data])
+        .unwrap();
+    view
+}
+
+fn gfx_load_texture_change<F, R>(factory: &mut F) -> gfx::handle::ShaderResourceView<R, [f32; 4]>
+where
+    F: gfx::Factory<R>,
+    R: gfx::Resources,
+{
+    static mut COUNT: u8 = 0;
+    use gfx::format::Rgba8;
+    let mut data = Vec::new();
+    let (width, height) = (100, 100);
+    for i in 0..width {
+        for j in 0..height {
+            data.push(i as u8);
+            data.push(j as u8);
+            data.push(unsafe { COUNT });
+            data.push(255u8);
+        }
+    }
+    unsafe { if COUNT == 255 { COUNT = 0 } else { COUNT += 1 } };
+    let kind = gfx::texture::Kind::D2(width as u16, height as u16, gfx::texture::AaMode::Single);
+    let (_, view) = factory
+        .create_texture_immutable_u8::<Rgba8>(kind, gfx::texture::Mipmap::Provided, &[&data])
+        .unwrap();
+    view
 }
