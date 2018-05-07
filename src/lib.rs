@@ -85,7 +85,7 @@ macro_rules! im_str {
     })
 }
 
-pub struct TextureHandle<'a> {
+pub struct FontTextureHandle<'a> {
     pub width: u32,
     pub height: u32,
     pub pixels: &'a [c_uchar],
@@ -155,7 +155,7 @@ impl ImGui {
     }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
-        F: FnOnce(TextureHandle<'a>) -> T,
+        F: FnOnce(FontTextureHandle<'a>) -> T,
     {
         let io = self.io();
         let mut pixels: *mut c_uchar = ptr::null_mut();
@@ -170,7 +170,7 @@ impl ImGui {
                 &mut height,
                 &mut bytes_per_pixel,
             );
-            f(TextureHandle {
+            f(FontTextureHandle {
                 width: width as u32,
                 height: height as u32,
                 pixels: slice::from_raw_parts(pixels, (width * height * bytes_per_pixel) as usize),
