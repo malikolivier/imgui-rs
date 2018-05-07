@@ -10,11 +10,10 @@ use glium::index::{self, PrimitiveType};
 use glium::program;
 use glium::texture;
 use glium::vertex;
-use glium::{DrawError, GlObject, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
+use glium::{DrawError, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
 use imgui::{DrawList, FrameSize, FromImTexture, ImDrawIdx, ImDrawVert, ImGui, Ui};
 use std::borrow::Cow;
 use std::fmt;
-use std::ops::Deref;
 use std::rc::Rc;
 
 pub type RendererResult<T> = Result<T, RendererError>;
@@ -132,17 +131,11 @@ impl Renderer {
         self.device_objects
             .upload_index_buffer(&self.ctx, draw_list.idx_buffer)?;
 
-        let font_texture_id = self.device_objects.texture.get_id() as usize;
-
         let mut idx_start = 0;
         for cmd in draw_list.cmd_buffer {
             let idx_end = idx_start + cmd.elem_count as usize;
 
-            let texture = if cmd.texture_id as usize == font_texture_id {
-                &self.device_objects.texture
-            } else {
-                <Texture as FromImTexture>::from_id(cmd.texture_id).deref()
-            };
+            let texture = <Texture as FromImTexture>::from_id(cmd.texture_id);
 
             surface.draw(
                 &self.device_objects.vertex_buffer,
@@ -185,7 +178,6 @@ pub struct DeviceObjects {
     vertex_buffer: VertexBuffer<ImDrawVert>,
     index_buffer: IndexBuffer<ImDrawIdx>,
     program: Program,
-    texture: Texture2d,
 }
 
 fn compile_default_program<F: Facade>(
@@ -229,7 +221,7 @@ impl DeviceObjects {
         let index_buffer = IndexBuffer::empty_dynamic(ctx, PrimitiveType::TrianglesList, 0)?;
 
         let program = compile_default_program(ctx)?;
-        let texture = im_gui.prepare_texture(|handle| {
+        let texture = im_gui.register_font_texture(|handle| {
             let data = RawImage2d {
                 data: Cow::Borrowed(handle.pixels),
                 width: handle.width,
@@ -244,7 +236,6 @@ impl DeviceObjects {
             vertex_buffer: vertex_buffer,
             index_buffer: index_buffer,
             program: program,
-            texture: texture,
         })
     }
     pub fn upload_vertex_buffer<F: Facade>(
