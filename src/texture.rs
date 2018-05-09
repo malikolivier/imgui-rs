@@ -62,15 +62,6 @@ impl Deref for AnyTexture {
     }
 }
 
-/// Trait defining how an external type can be converted into a type implementing
-/// [`ImTexture`].
-///
-/// Typically implemented to convert a native type (e.g. Texture2d from the
-/// glium crate) to a type defined in the back-end implemnting [`ImTexture`].
-pub trait IntoImTexture<T>: ImTexture {
-    fn into_texture(t: T) -> Self;
-}
-
 /// Trait defining how an object implementing [`ImTexture`] should be converted
 /// back to the native texture type used by the back-end.
 pub trait FromImTexture {

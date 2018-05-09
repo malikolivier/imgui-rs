@@ -1,5 +1,5 @@
 use imgui::{FontGlyphRange, FrameSize, ImFontConfig, ImGui, ImGuiMouseCursor, ImVec4, Ui};
-use imgui_gfx_renderer::{Renderer, Shaders};
+use imgui_gfx_renderer::{Renderer, Shaders, Texture};
 use std::time::Instant;
 
 #[derive(Copy, Clone, PartialEq, Debug, Default)]
@@ -202,6 +202,12 @@ pub fn run<F: FnMut(&Ui) -> bool>(title: String, clear_color: [f32; 4], mut run_
         };
 
         let ui = imgui.frame(frame_size, delta_s);
+
+        let texture = ui.make_texture(im_str!("#STANDARD"), || gfx_load_texture(&mut factory));
+        ui.image(&texture, (100.0, 100.0)).build();
+        let texture = ui.replace_texture(im_str!("#CHANGE"), gfx_load_texture_change(&mut factory));
+        ui.image(&texture, (100.0, 100.0)).build();
+
         if !run_ui(&ui) {
             break;
         }
@@ -251,4 +257,44 @@ fn update_mouse(imgui: &mut ImGui, mouse_state: &mut MouseState) {
     ]);
     imgui.set_mouse_wheel(mouse_state.wheel);
     mouse_state.wheel = 0.0;
+}
+
+use gfx;
+
+fn gfx_load_texture<F, R>(factory: &mut F) -> Texture<R>
+where
+    F: gfx::Factory<R>,
+    R: gfx::Resources,
+{
+    let mut data = Vec::new();
+    let (width, height) = (100, 100);
+    for i in 0..width {
+        for j in 0..height {
+            data.push(i as u8);
+            data.push(j as u8);
+            data.push(255u8);
+            data.push(255u8);
+        }
+    }
+    Texture::from_raw(factory, width, height, &data).unwrap()
+}
+
+fn gfx_load_texture_change<F, R>(factory: &mut F) -> Texture<R>
+where
+    F: gfx::Factory<R>,
+    R: gfx::Resources,
+{
+    static mut COUNT: u8 = 0;
+    let mut data = Vec::new();
+    let (width, height) = (100, 100);
+    for i in 0..width {
+        for j in 0..height {
+            data.push(i as u8);
+            data.push(j as u8);
+            data.push(unsafe { COUNT });
+            data.push(255u8);
+        }
+    }
+    unsafe { if COUNT == 255 { COUNT = 0 } else { COUNT += 1 } };
+    Texture::from_raw(factory, width, height, &data).unwrap()
 }
