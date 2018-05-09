@@ -206,14 +206,14 @@ impl DeviceObjects {
         ));
 
         let program = try!(compile_default_program(ctx));
-        let texture = try!(im_gui.register_font_texture::<_, _, Texture, _>(|handle| {
+        let texture = try!(im_gui.register_font_texture(|handle| {
             let data = RawImage2d {
                 data: Cow::Borrowed(handle.pixels),
                 width: handle.width,
                 height: handle.height,
                 format: ClientFormat::U8U8U8U8,
             };
-            Texture2d::new(ctx, data)
+            Texture2d::new(ctx, data).map(Texture::from_texture_2d)
         }));
 
         im_gui.set_texture_id(texture.get_id() as usize);

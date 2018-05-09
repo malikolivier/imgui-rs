@@ -31,7 +31,7 @@ fn main() {
 
                 // Constant texture (define once)
                 ui.text("Constant texture");
-                let constant_texture = ui.make_texture::<_, _, Texture>(im_str!("#Constant"), || {
+                let constant_texture = ui.make_texture(im_str!("#Constant"), || {
                     let mut image_data: Vec<Vec<(f32, f32, f32, f32)>> = Vec::new();
                     for i in 0..100 {
                         let mut row: Vec<(f32, f32, f32, f32)> = Vec::new();
@@ -40,7 +40,7 @@ fn main() {
                         }
                         image_data.push(row);
                     }
-                    Texture2d::new(&gl_ctx, image_data).unwrap()
+                    Texture::from_data(&gl_ctx, image_data).unwrap()
                 });
                 let size = constant_texture.get_size();
                 ui.image(&constant_texture, (size.0 as f32, size.1 as f32))
@@ -48,7 +48,7 @@ fn main() {
 
                 // Changing texture (re-defined and swap texture for each frame)
                 ui.text("Variable texture");
-                let changing_texture = ui.replace_texture::<_, Texture>(im_str!("#Changing"), {
+                let changing_texture = ui.replace_texture(im_str!("#Changing"), {
                     let mut image_data: Vec<Vec<(f32, f32, f32, f32)>> = Vec::new();
                     for i in 0..100 {
                         let mut row: Vec<(f32, f32, f32, f32)> = Vec::new();
@@ -61,7 +61,7 @@ fn main() {
                     if t > 1.0 {
                         t = 0.0;
                     }
-                    Texture2d::new(&gl_ctx, image_data).unwrap()
+                    Texture::from_data(&gl_ctx, image_data).unwrap()
                 });
                 let size = changing_texture.get_size();
                 ui.image(&changing_texture, (size.0 as f32, size.1 as f32))
@@ -69,8 +69,8 @@ fn main() {
 
                 // Texture defined only once, however, you can dynamically draw on it.
                 ui.text("Draw on texture");
-                let draw_texture = ui.make_texture::<_, _, Texture>(im_str!("#Draw"), || {
-                    Texture2d::empty(&gl_ctx, 100, 100).unwrap()
+                let draw_texture = ui.make_texture(im_str!("#Draw"), || {
+                    Texture::from_texture_2d(Texture2d::empty(&gl_ctx, 100, 100).unwrap())
                 });
                 // Get the texture as a surface. It must first be converted to a
                 // `glium::Texture2d` object by using `Texture::from`.
