@@ -2,7 +2,9 @@
 extern crate glium;
 extern crate imgui;
 
+mod context;
 mod im_texture;
+pub use context::{AppConfig, AppContext, ContextError};
 pub use im_texture::Texture;
 
 use glium::{DrawError, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
