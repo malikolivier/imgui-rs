@@ -345,6 +345,23 @@ impl ImGui {
         let io = self.io_mut();
         io.key_map[key as usize] = mapping as i32;
     }
+    /// Return whether specific key is pressed
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use imgui::{ImGuiKey, Ui};
+    ///
+    /// fn test(ui: &Ui) {
+    ///     if ui.imgui().key_down(ImGuiKey::Delete) {
+    ///         println!("Delete is pressed!");
+    ///     }
+    /// }
+    /// ```
+    pub fn key_down(&self, key: ImGuiKey) -> bool {
+        let io = self.io();
+        io.keys_down[key as usize]
+    }
     pub fn add_input_character(&mut self, character: char) {
         let mut buf = [0; 5];
         character.encode_utf8(&mut buf);
