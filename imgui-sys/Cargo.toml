@@ -1,16 +1,13 @@
 [package]
-name = "imgui-sys"
-version = "0.0.19-pre"
+name = "aflak_imgui-sys"
+version = "0.18.1"
 authors = ["Joonas Javanainen <joonas.javanainen@gmail.com>", "imgui-rs contributors"]
 description = "Raw FFI bindings to dear imgui"
-homepage = "https://github.com/Gekkio/imgui-rs"
-repository = "https://github.com/Gekkio/imgui-rs"
+homepage = "https://github.com/malikolivier/imgui-rs"
+repository = "https://github.com/malikolivier/imgui-rs"
 license = "MIT/Apache-2.0"
 categories = ["gui", "external-ffi-bindings"]
 build = "build.rs"
-
-[badges]
-travis-ci = { repository = "Gekkio/imgui-rs" }
 
 [dependencies]
 libc = "0.2"
