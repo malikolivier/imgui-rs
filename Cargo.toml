@@ -1,23 +1,23 @@
 [package]
-name = "imgui"
-version = "0.0.19-pre"
-authors = ["Joonas Javanainen <joonas.javanainen@gmail.com>", "imgui-rs contributors"]
+name = "aflak_imgui"
+version = "0.18.1"
+authors = ["Joonas Javanainen <joonas.javanainen@gmail.com>",
+           "Malik Olivier Boussejra <malik@boussejra.com>",
+           "imgui-rs contributors"]
 description = "High-level Rust bindings to dear imgui"
-homepage = "https://github.com/Gekkio/imgui-rs"
-repository = "https://github.com/Gekkio/imgui-rs"
+homepage = "https://github.com/malikolivier/imgui-rs"
+repository = "https://github.com/malikolivier/imgui-rs"
 license = "MIT/Apache-2.0"
 categories = ["gui", "api-bindings"]
 readme = "README.markdown"
 
-[badges]
-travis-ci = { repository = "Gekkio/imgui-rs" }
-
 [dependencies]
-imgui-sys = { version = "0.0.19-pre", path = "imgui-sys" }
+aflak_imgui-sys = { version = "0.18.1", path = "imgui-sys" }
 
+# Comment this section when publishing new releases to crates.io!
 [dev-dependencies]
 glium = { version = "0.22", default-features = true }
-imgui-glium-renderer = { path = "imgui-glium-renderer" }
+aflak_imgui-glium-renderer = { path = "imgui-glium-renderer", version = "0.18.1" }
 
 [workspace]
 members = ["imgui-examples", "imgui-sys", "imgui-gfx-renderer", "imgui-glium-renderer"]
