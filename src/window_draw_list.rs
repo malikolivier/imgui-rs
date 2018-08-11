@@ -99,7 +99,7 @@ impl<'ui> WindowDrawList<'ui> {
     /// # Example
     ///
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// fn custom_drawing(ui: &Ui) {
     ///     let draw_list = ui.get_window_draw_list();
     ///     draw_list.channels_split(2, |channels| {
