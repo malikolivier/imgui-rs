@@ -5,7 +5,7 @@
 //! In your initialization code call `configure_keys`:
 //!
 //! ```rust,no_run
-//! # extern crate imgui;
+//! # extern crate aflak_imgui as imgui;
 //! # extern crate imgui_glutin_support;
 //! use imgui::ImGui;
 //!
@@ -20,7 +20,7 @@
 //!
 //! ```rust,no_run
 //! # extern crate glutin;
-//! # extern crate imgui;
+//! # extern crate aflak_imgui as imgui;
 //! # extern crate imgui_glutin_support;
 //! # use glutin::EventsLoop;
 //! # use imgui::ImGui;
@@ -44,7 +44,7 @@
 //!
 //! ```rust,no_run
 //! # extern crate glutin;
-//! # extern crate imgui;
+//! # extern crate aflak_imgui as imgui;
 //! # extern crate imgui_glutin_support;
 //! # use glutin::{EventsLoop, Event, WindowEvent, MouseScrollDelta, TouchPhase};
 //! # use imgui::ImGui;
@@ -75,8 +75,8 @@
 //! # }
 //! ```
 
+extern crate aflak_imgui as imgui;
 extern crate glutin;
-extern crate imgui;
 
 use glutin::{
     ElementState, Event, KeyboardInput, ModifiersState, MouseButton, MouseCursor, MouseScrollDelta,

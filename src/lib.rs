@@ -1,4 +1,4 @@
-pub extern crate imgui_sys as sys;
+pub extern crate aflak_imgui_sys as sys;
 
 use std::ffi::CStr;
 use std::mem;
@@ -360,6 +360,7 @@ impl ImGui {
     /// # Example
     ///
     /// ```rust
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// use imgui::{ImGuiKey, Ui};
     ///
     /// fn test(ui: &Ui) {
@@ -1126,7 +1127,7 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
@@ -1151,7 +1152,7 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
@@ -1216,6 +1217,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1290,6 +1292,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1307,6 +1310,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1396,6 +1400,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1414,6 +1419,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1444,6 +1450,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1462,6 +1469,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1512,6 +1520,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1538,6 +1547,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
@@ -1588,7 +1598,7 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
@@ -1647,6 +1657,7 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```rust,no_run
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// fn custom_draw(ui: &Ui) {
     ///     let draw_list = ui.get_window_draw_list();
@@ -1662,6 +1673,7 @@ impl<'ui> Ui<'ui> {
     /// dropped.
     ///
     /// ```rust
+    /// # #[macro_use] extern crate aflak_imgui as imgui;
     /// # use imgui::*;
     /// fn custom_draw(ui: &Ui) {
     ///     let draw_list = ui.get_window_draw_list();

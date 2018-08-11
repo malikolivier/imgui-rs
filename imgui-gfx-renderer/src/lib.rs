@@ -1,6 +1,6 @@
 #[macro_use]
 extern crate gfx;
-extern crate imgui;
+extern crate aflak_imgui as imgui;
 
 use gfx::handle::{Buffer, RenderTargetView};
 use gfx::memory::Bind;

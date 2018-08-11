@@ -1,6 +1,6 @@
 #[macro_use]
 extern crate glium;
-extern crate imgui;
+extern crate aflak_imgui as imgui;
 
 use glium::backend::{Context, Facade};
 use glium::index::{self, PrimitiveType};
