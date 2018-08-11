@@ -13,6 +13,6 @@ gfx = "0.17"
 gfx_window_glutin = "0.26"
 glium = { version = "0.22", default-features = true }
 glutin = "0.18"
-imgui = { version = "0.0.20-pre", path = "../" }
+aflak_imgui = { version = "0.19.1", path = "../" }
 imgui-gfx-renderer = { version = "0.0.20-pre", path = "../imgui-gfx-renderer" }
-imgui-glium-renderer = { version = "0.0.20-pre", path = "../imgui-glium-renderer" }
+aflak_imgui-glium-renderer = { version = "0.19.1", path = "../imgui-glium-renderer" }

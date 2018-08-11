@@ -1,4 +1,4 @@
-pub extern crate imgui_sys as sys;
+pub extern crate aflak_imgui_sys as sys;
 
 use std::ffi::CStr;
 use std::mem;
@@ -383,7 +383,7 @@ impl ImGui {
     /// # Example
     ///
     /// ```rust
-    /// use imgui::{ImGuiKey, Ui};
+    /// use aflak_imgui::{ImGuiKey, Ui};
     ///
     /// fn test(ui: &Ui) {
     ///     let delete_key_index = ui.imgui().get_key_index(ImGuiKey::Delete);
@@ -1128,8 +1128,8 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
-    /// # use imgui::*;
+    /// # #[macro_use] extern crate aflak_imgui;
+    /// # use aflak_imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
     ///     if ui.is_item_hovered() {
@@ -1153,8 +1153,8 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
-    /// # use imgui::*;
+    /// # #[macro_use] extern crate aflak_imgui;
+    /// # use aflak_imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
     ///     if ui.is_item_hovered() {
@@ -1270,7 +1270,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// # let mut selected_radio_value = 2;
@@ -1287,7 +1287,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// # let mut radio_button_test = "cats".to_string();
@@ -1366,7 +1366,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// ui.progress_bar(0.6)
@@ -1384,7 +1384,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// ui.window(im_str!("ChatWindow"))
@@ -1420,12 +1420,12 @@ impl<'ui> Ui<'ui> {
     /// ## Example using glium as back-end
     ///
     /// ```rust,no_run
-    /// #[macro_use] extern crate imgui;
+    /// #[macro_use] extern crate aflak_imgui;
     /// extern crate glium;
-    /// extern crate imgui_glium_renderer;
+    /// extern crate aflak_imgui_glium_renderer;
     ///
-    /// use imgui::*;
-    /// use imgui_glium_renderer::Texture;
+    /// use aflak_imgui::*;
+    /// use aflak_imgui_glium_renderer::Texture;
     /// use glium::backend::Facade;
     ///
     /// fn make_a_texture<F: Facade>(ui: &Ui, facade: &F, data: Vec<Vec<(u8, u8, u8, u8)>>) {
@@ -1452,7 +1452,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// ui.with_style_var(StyleVar::Alpha(0.2), || {
@@ -1470,7 +1470,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// # let styles = [StyleVar::Alpha(0.2), StyleVar::WindowPadding(ImVec2::new(1.0, 1.0))];
@@ -1520,7 +1520,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// ui.with_color_var(ImGuiCol::Text, (1.0, 0.0, 0.0, 1.0), || {
@@ -1546,7 +1546,7 @@ impl<'ui> Ui<'ui> {
     ///
     /// # Example
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// # let mut imgui = ImGui::init();
     /// # let ui = imgui.frame(FrameSize::new(100.0, 100.0, 1.0), 0.1);
     /// let red = (1.0, 0.0, 0.0, 1.0);
@@ -1596,8 +1596,8 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```
-    /// # #[macro_use] extern crate imgui;
-    /// # use imgui::*;
+    /// # #[macro_use] extern crate aflak_imgui;
+    /// # use aflak_imgui::*;
     /// fn user_interface(ui: &Ui) {
     ///     ui.text("Hover over me");
     ///     let is_hover_over_me_text_hovered = ui.is_item_hovered();
@@ -1640,7 +1640,7 @@ impl<'ui> Ui<'ui> {
     /// # Examples
     ///
     /// ```rust,no_run
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// fn custom_draw(ui: &Ui) {
     ///     let draw_list = ui.get_window_draw_list();
     ///     // Draw a line
@@ -1655,7 +1655,7 @@ impl<'ui> Ui<'ui> {
     /// dropped.
     ///
     /// ```rust
-    /// # use imgui::*;
+    /// # use aflak_imgui::*;
     /// fn custom_draw(ui: &Ui) {
     ///     let draw_list = ui.get_window_draw_list();
     ///     // Draw something...
@@ -1682,12 +1682,12 @@ impl<'ui> Ui<'ui> {
     /// ## Example using glium as back-end
     ///
     /// ```rust,no_run
-    /// #[macro_use] extern crate imgui;
+    /// #[macro_use] extern crate aflak_imgui;
     /// extern crate glium;
-    /// extern crate imgui_glium_renderer;
+    /// extern crate aflak_imgui_glium_renderer;
     ///
-    /// use imgui::*;
-    /// use imgui_glium_renderer::Texture;
+    /// use aflak_imgui::*;
+    /// use aflak_imgui_glium_renderer::Texture;
     /// use glium::backend::Facade;
     /// use glium::Texture2d;
     ///
@@ -1725,12 +1725,12 @@ impl<'ui> Ui<'ui> {
     /// ## Example using glium as back-end
     ///
     /// ```rust,no_run
-    /// #[macro_use] extern crate imgui;
+    /// #[macro_use] extern crate aflak_imgui;
     /// extern crate glium;
-    /// extern crate imgui_glium_renderer;
+    /// extern crate aflak_imgui_glium_renderer;
     ///
-    /// use imgui::*;
-    /// use imgui_glium_renderer::Texture;
+    /// use aflak_imgui::*;
+    /// use aflak_imgui_glium_renderer::Texture;
     /// use glium::backend::Facade;
     ///
     /// fn make_a_texture<F: Facade>(ui: &Ui, facade: &F, data: Vec<Vec<(u8, u8, u8, u8)>>) {
