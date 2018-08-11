@@ -1,6 +1,6 @@
 #[macro_use]
 extern crate glium;
-extern crate imgui;
+extern crate aflak_imgui as imgui;
 
 mod context;
 mod im_texture;

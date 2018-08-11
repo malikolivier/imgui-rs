@@ -1,6 +1,6 @@
 extern crate glium;
-extern crate imgui;
-extern crate imgui_glium_renderer;
+extern crate aflak_imgui as imgui;
+extern crate aflak_imgui_glium_renderer as imgui_glium_renderer;
 
 mod support;
 
