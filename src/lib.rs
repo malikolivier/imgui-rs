@@ -34,9 +34,9 @@ pub use sliders::{
 pub use string::{ImStr, ImString};
 pub use style::StyleVar;
 pub use sys::{
-    ImDrawIdx, ImDrawVert, ImGuiCol, ImGuiColorEditFlags, ImGuiCond, ImGuiHoveredFlags,
-    ImGuiInputTextFlags, ImGuiKey, ImGuiMouseCursor, ImGuiSelectableFlags, ImGuiStyle,
-    ImGuiTreeNodeFlags, ImGuiWindowFlags, ImTextureID, ImVec2, ImVec4,
+    ImDrawIdx, ImDrawVert, ImGuiCol, ImGuiColorEditFlags, ImGuiCond, ImGuiFocusedFlags,
+    ImGuiHoveredFlags, ImGuiInputTextFlags, ImGuiKey, ImGuiMouseCursor, ImGuiSelectableFlags,
+    ImGuiStyle, ImGuiTreeNodeFlags, ImGuiWindowFlags, ImTextureID, ImVec2, ImVec4,
 };
 use texture::TextureCache;
 pub use texture::{AnyTexture, FromImTexture, ImTexture};
@@ -1616,6 +1616,21 @@ impl<'ui> Ui<'ui> {
     /// Return `true` if the current window is being hovered by the mouse.
     pub fn is_window_hovered(&self) -> bool {
         unsafe { sys::igIsWindowHovered(ImGuiHoveredFlags::empty()) }
+    }
+
+    /// Return `true` if the current window is currently focused.
+    pub fn is_window_focused(&self) -> bool {
+        unsafe { sys::igIsWindowFocused(ImGuiFocusedFlags::RootAndChildWindows) }
+    }
+
+    /// Return `true` if the current root window is currently focused.
+    pub fn is_root_window_focused(&self) -> bool {
+        unsafe { sys::igIsWindowFocused(ImGuiFocusedFlags::RootWindow) }
+    }
+
+    /// Return `true` if the current child window is currently focused.
+    pub fn is_child_window_focused(&self) -> bool {
+        unsafe { sys::igIsWindowFocused(ImGuiFocusedFlags::ChildWindows) }
     }
 
     /// Returns `true` if the last item is being active.
