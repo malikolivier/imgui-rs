@@ -12,7 +12,8 @@ publish = false
 gfx = "0.17"
 gfx_window_glutin = "0.26"
 glium = { version = "0.22", default-features = true }
-glutin = "0.18"
+glutin = "0.17"
 aflak_imgui = { version = "0.20.1", path = "../" }
 imgui-gfx-renderer = { version = "0.0.21-pre", path = "../imgui-gfx-renderer" }
 aflak_imgui-glium-renderer = { version = "0.20.1", path = "../imgui-glium-renderer" }
+imgui-glutin-support = { version = "0.0.21-pre", path = "../imgui-glutin-support" }

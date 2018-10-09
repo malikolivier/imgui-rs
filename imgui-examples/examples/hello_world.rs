@@ -2,6 +2,7 @@ extern crate glium;
 #[macro_use]
 extern crate aflak_imgui as imgui;
 extern crate aflak_imgui_glium_renderer as imgui_glium_renderer;
+extern crate imgui_glutin_support;
 
 use imgui::*;
 

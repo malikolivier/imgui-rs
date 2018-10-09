@@ -12,5 +12,5 @@ categories = ["gui"]
 travis-ci = { repository = "Gekkio/imgui-rs" }
 
 [dependencies]
-glutin = ">= 0.17, <= 0.18"
+glutin = "0.17"
 aflak_imgui = { version = "0.20.1", path = "../" }
