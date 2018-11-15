@@ -116,7 +116,7 @@ pub struct ImFont {
     pub display_offset: ImVec2,
     pub glyphs: ImVector<ImFontGlyph>,
     pub index_advance_x: ImVector<c_float>,
-    pub index_lookup: ImVector<c_ushort>,
+    pub index_lookup: ImVector<ImWchar>,
     pub fallback_glyph: *const ImFontGlyph,
     pub fallback_advance_x: c_float,
     pub fallback_char: ImWchar,
