@@ -6,6 +6,7 @@ use glium::backend::{Context, Facade};
 use glium::index::{self, PrimitiveType};
 use glium::program;
 use glium::texture;
+use glium::uniforms::MagnifySamplerFilter;
 use glium::vertex;
 use glium::{DrawError, IndexBuffer, Program, Surface, Texture2d, VertexBuffer};
 use imgui::{DrawList, FrameSize, ImGui, ImTexture, Textures, Ui};
@@ -155,7 +156,7 @@ impl Renderer {
                 &self.device_objects.program,
                 &uniform! {
                     matrix: matrix,
-                    tex: texture.sampled()
+                    tex: texture.sampled().magnify_filter(MagnifySamplerFilter::Nearest)
                 },
                 &DrawParameters {
                     blend: Blend::alpha_blending(),
