@@ -9,6 +9,7 @@ use std::str;
 use sys::ImGuiStyleVar;
 
 pub use child_frame::ChildFrame;
+pub use clipboard::Clipboard;
 pub use color_editors::{
     ColorButton, ColorEdit, ColorEditMode, ColorFormat, ColorPicker, ColorPickerMode, ColorPreview,
     EditableColor,
@@ -44,6 +45,7 @@ pub use window::Window;
 pub use window_draw_list::{ChannelsSplit, ImColor, WindowDrawList};
 
 mod child_frame;
+mod clipboard;
 mod color_editors;
 mod drag;
 mod fonts;
@@ -152,6 +154,16 @@ impl ImGui {
     }
     pub fn fonts(&mut self) -> ImFontAtlas {
         unsafe { ImFontAtlas::from_ptr(self.io_mut().fonts) }
+    }
+    pub fn prepare_clipboard<C: Clipboard>(
+        &mut self,
+        user_data: C::UserData,
+    ) {
+        let io = self.io_mut();
+        let user_data = Box::into_raw(Box::new(user_data));
+        io.clipboard_user_data = user_data as *mut C::UserData as *mut c_void;
+        io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
+        io.set_clipboard_text_fn = Some(C::set_clipboard_text_raw);
     }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
@@ -427,6 +439,12 @@ impl ImGui {
 impl Drop for ImGui {
     fn drop(&mut self) {
         unsafe {
+            let io = &mut *sys::igGetIO();
+            // Clean up clipboard user data
+            if !io.clipboard_user_data.is_null() {
+                let _ = Box::from_raw(io.clipboard_user_data);
+                io.clipboard_user_data = ptr::null_mut();
+            }
             CURRENT_UI = None;
             sys::igDestroyContext(ptr::null_mut());
         }
