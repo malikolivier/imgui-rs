@@ -153,6 +153,18 @@ impl ImGui {
     pub fn fonts(&mut self) -> ImFontAtlas {
         unsafe { ImFontAtlas::from_ptr(self.io_mut().fonts) }
     }
+    pub fn prepare_clipboard<T>(
+        &mut self,
+        user_data: Box<T>,
+        get: extern "C" fn(*mut c_void) -> *const c_char,
+        set: extern "C" fn(*mut c_void, *const c_char),
+    ) {
+        let io = self.io_mut();
+        let user_data = Box::leak(user_data);
+        io.clipboard_user_data = user_data as *mut T as *mut c_void;
+        io.get_clipboard_text_fn = Some(get);
+        io.set_clipboard_text_fn = Some(set);
+    }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
         F: FnOnce(TextureHandle<'a>) -> T,
