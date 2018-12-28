@@ -157,13 +157,13 @@ impl ImGui {
     }
     pub fn prepare_clipboard<C: Clipboard>(
         &mut self,
-        user_data: C,
+        user_data: C::UserData,
     ) {
         let io = self.io_mut();
         let user_data = Box::into_raw(Box::new(user_data));
-        io.clipboard_user_data = user_data as *mut c_void;
+        io.clipboard_user_data = user_data as *mut C::UserData as *mut c_void;
         io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
-        io.set_clipboard_text_fn = Some(C::set_clipboard_text_raw);
+        io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
     }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
@@ -439,6 +439,12 @@ impl ImGui {
 impl Drop for ImGui {
     fn drop(&mut self) {
         unsafe {
+            let io = &mut *sys::igGetIO();
+            // Clean up clipboard user data
+            if !io.clipboard_user_data.is_null() {
+                let _ = Box::from_raw(io.clipboard_user_data);
+                io.clipboard_user_data = ptr::null_mut();
+            }
             CURRENT_UI = None;
             sys::igDestroyContext(ptr::null_mut());
         }
