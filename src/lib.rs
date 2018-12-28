@@ -9,6 +9,7 @@ use std::str;
 use sys::ImGuiStyleVar;
 
 pub use child_frame::ChildFrame;
+pub use clipboard::Clipboard;
 pub use color_editors::{
     ColorButton, ColorEdit, ColorEditMode, ColorFormat, ColorPicker, ColorPickerMode, ColorPreview,
     EditableColor,
@@ -44,6 +45,7 @@ pub use window::Window;
 pub use window_draw_list::{ChannelsSplit, ImColor, WindowDrawList};
 
 mod child_frame;
+mod clipboard;
 mod color_editors;
 mod drag;
 mod fonts;
@@ -153,17 +155,15 @@ impl ImGui {
     pub fn fonts(&mut self) -> ImFontAtlas {
         unsafe { ImFontAtlas::from_ptr(self.io_mut().fonts) }
     }
-    pub fn prepare_clipboard<T>(
+    pub fn prepare_clipboard<C: Clipboard>(
         &mut self,
-        user_data: Box<T>,
-        get: extern "C" fn(*mut c_void) -> *const c_char,
-        set: extern "C" fn(*mut c_void, *const c_char),
+        user_data: C,
     ) {
         let io = self.io_mut();
-        let user_data = Box::leak(user_data);
-        io.clipboard_user_data = user_data as *mut T as *mut c_void;
-        io.get_clipboard_text_fn = Some(get);
-        io.set_clipboard_text_fn = Some(set);
+        let user_data = Box::into_raw(Box::new(user_data));
+        io.clipboard_user_data = user_data as *mut c_void;
+        io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
+        io.set_clipboard_text_fn = Some(C::set_clipboard_text_raw);
     }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
