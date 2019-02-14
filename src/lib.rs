@@ -163,7 +163,7 @@ impl ImGui {
         let user_data = Box::into_raw(Box::new(user_data));
         io.clipboard_user_data = user_data as *mut C::UserData as *mut c_void;
         io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
-        io.get_clipboard_text_fn = Some(C::get_clipboard_text_raw);
+        io.set_clipboard_text_fn = Some(C::set_clipboard_text_raw);
     }
     pub fn prepare_texture<'a, F, T>(&mut self, f: F) -> T
     where
