@@ -273,8 +273,8 @@ dependencies = [
 
 [[package]]
 name = "glium"
-version = "0.23.0-pre"
-source = "git+https://github.com/malikolivier/glium?rev=d6ac886143198014c6dd254bcfb23422a0df6307#d6ac886143198014c6dd254bcfb23422a0df6307"
+version = "0.23.0"
+source = "git+https://github.com/malikolivier/glium?rev=f36ceca3864171e8217dc60085750e2af9beec82#f36ceca3864171e8217dc60085750e2af9beec82"
 dependencies = [
  "backtrace 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "fnv 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -334,7 +334,7 @@ dependencies = [
 name = "imgui-glium-examples"
 version = "0.0.22-pre"
 dependencies = [
- "glium 0.23.0-pre (git+https://github.com/malikolivier/glium?rev=d6ac886143198014c6dd254bcfb23422a0df6307)",
+ "glium 0.23.0 (git+https://github.com/malikolivier/glium?rev=f36ceca3864171e8217dc60085750e2af9beec82)",
  "image 0.20.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "imgui 0.0.22-pre",
  "imgui-glium-renderer 0.0.22-pre",
@@ -345,7 +345,7 @@ dependencies = [
 name = "imgui-glium-renderer"
 version = "0.0.22-pre"
 dependencies = [
- "glium 0.23.0-pre (git+https://github.com/malikolivier/glium?rev=d6ac886143198014c6dd254bcfb23422a0df6307)",
+ "glium 0.23.0 (git+https://github.com/malikolivier/glium?rev=f36ceca3864171e8217dc60085750e2af9beec82)",
  "imgui 0.0.22-pre",
  "imgui-sys 0.0.22-pre",
 ]
@@ -364,7 +364,7 @@ version = "0.0.22-pre"
 dependencies = [
  "bitflags 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "cc 1.0.25 (registry+https://github.com/rust-lang/crates.io-index)",
- "glium 0.23.0-pre (git+https://github.com/malikolivier/glium?rev=d6ac886143198014c6dd254bcfb23422a0df6307)",
+ "glium 0.23.0 (git+https://github.com/malikolivier/glium?rev=f36ceca3864171e8217dc60085750e2af9beec82)",
  "libc 0.2.44 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -984,7 +984,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum gl_generator 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a0ffaf173cf76c73a73e080366bf556b4776ece104b06961766ff11449f38604"
 "checksum gl_generator 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7a795170cbd85b5a7baa58d6d7525cae6a03e486859860c220f7ebbbdd379d0a"
 "checksum gleam 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)" = "4b47f5b15742aee359c7895ab98cf2cceecc89bb4feb6f4e42f802d7899877da"
-"checksum glium 0.23.0-pre (git+https://github.com/malikolivier/glium?rev=d6ac886143198014c6dd254bcfb23422a0df6307)" = "<none>"
+"checksum glium 0.23.0 (git+https://github.com/malikolivier/glium?rev=f36ceca3864171e8217dc60085750e2af9beec82)" = "<none>"
 "checksum glutin 0.19.0 (registry+https://github.com/rust-lang/crates.io-index)" = "535c6eda58adbb227604b2db10a022ffd6339d7ea3e970f338e7d98aeb24fcc3"
 "checksum image 0.20.1 (registry+https://github.com/rust-lang/crates.io-index)" = "44665b4395d1844c96e7dc8ed5754782a1cdfd9ef458a80bbe45702681450504"
 "checksum inflate 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)" = "6f53b811ee8e2057ccf9643ca6b4277de90efaf5e61e55fd5254576926bb4245"
